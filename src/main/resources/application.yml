@@ -22,7 +22,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     generate-ddl: false
     show-sql: false
     properties:
@@ -34,3 +36,18 @@ spring:
   jackson:
     serialization.write-dates-as-timestamps: false
     time-zone: UTC
+  mail:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "thanhdatnguyen211103@gmail.com"
+    password: "rtaffkwjzjjfnlpy"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mail:
+  from-sender: thanhdatnguyen211103@gmail.com
+  company: "Công ty giải pháp phần mềm TDSoftware"

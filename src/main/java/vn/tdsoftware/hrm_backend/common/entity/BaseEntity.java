@@ -2,8 +2,8 @@ package vn.tdsoftware.hrm_backend.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,14 +15,14 @@ import java.util.Date;
 @MappedSuperclass
 @Getter
 @Setter
-public class BaseEntity<T extends Serializable> implements Serializable {
+public abstract class BaseEntity<T extends Serializable> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private T id;
 
     @Column(name = "isEnabled")
-    private boolean isEnabled = false;
+    private boolean isEnabled = true;
 
     @Column(name = "createdBy")
     private Integer createdBy;
