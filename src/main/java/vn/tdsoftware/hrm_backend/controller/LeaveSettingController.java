@@ -1,7 +1,6 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,7 @@ import vn.tdsoftware.hrm_backend.dto.leavesetting.response.LeaveSettingResponse;
 import vn.tdsoftware.hrm_backend.service.LeaveSettingService;
 
 @RestController
-@RequestMapping("/leave-setting")
+@RequestMapping("/admin/leave-setting")
 @RequiredArgsConstructor
 public class LeaveSettingController {
     private final LeaveSettingService leaveSettingService;

@@ -1,6 +1,7 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
@@ -12,10 +13,9 @@ import vn.tdsoftware.hrm_backend.service.AccountService;
 import java.util.List;
 
 @RestController()
-@RequestMapping("/account")
+@RequestMapping("/admin/account")
 @RequiredArgsConstructor
-public class AccountController {
-
+public class ManageAccountController {
     private final AccountService accountService;
 
     @PostMapping("/get-list-account")

@@ -10,6 +10,7 @@ public interface JwtService {
     String generateRefreshToken(UserDetails user);
     String extractUsername(String token, TokenType type);
     List<String> extractPermissions(String token);
+    Long extractDepartment(String token);
     Long extractEmployeeId(String token);
     boolean isValid(String token, TokenType type, UserDetails user);
 }

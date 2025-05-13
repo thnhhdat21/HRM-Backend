@@ -92,6 +92,16 @@ public class DepartmentServiceImp implements DepartmentService {
         return listResponse;
     }
 
+    @Override
+    public Long getDepartmentByEmployeeId(long employeeId) {
+        Long departmentId = departmentDAO.getDepartmentByEmployeeId(employeeId);
+        if (departmentId == null) {
+            throw new BusinessException(ErrorCode.DEPARTMENT_IS_EMPTY);
+        }
+        return departmentId;
+
+    }
+
     private List<DepartmentTreeResponse> buildTree(List<DepartmentTreeResponse> list) {
         HashMap<Long, DepartmentTreeResponse> map = new HashMap<>();
         List<DepartmentTreeResponse> listResponse = new ArrayList<>();

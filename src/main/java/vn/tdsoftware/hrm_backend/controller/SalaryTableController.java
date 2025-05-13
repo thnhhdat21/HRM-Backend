@@ -1,6 +1,7 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
@@ -17,7 +18,8 @@ import java.util.List;
 public class SalaryTableController {
     private final SalaryTableService salaryTableService;
 
-    @PostMapping("/get-list-salary-table")
+    @PostMapping("/get-salary-table")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY')")
     public ResponseData<List<SalaryTableResponse>> getListSalary() {
         List<SalaryTableResponse> responses = salaryTableService.getListSalaryTable();
         return ResponseData.<List<SalaryTableResponse>>builder()
@@ -25,10 +27,22 @@ public class SalaryTableController {
                 .data(responses)
                 .message("Get list salary table successfully")
                 .build();
+    }
 
+    @PostMapping("/get-salary-table-department")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_DEPARTMENT')")
+    public ResponseData<List<SalaryTableResponse>> getListSalaryOfDepartment() {
+        List<SalaryTableResponse> responses = salaryTableService.getListSalaryTableOfDepartment();
+        return ResponseData.<List<SalaryTableResponse>>builder()
+                .code(1000)
+                .data(responses)
+                .message("Get list salary table successfully")
+                .build();
     }
 
     @PostMapping("/get-list-salary-detail")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+                                    "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<List<SalaryDetailResponse>> getListSalary(@RequestBody EmployeeFilter filter) {
         List<SalaryDetailResponse> responses = salaryTableService.getListSalaryDetail(filter);
         return ResponseData.<List<SalaryDetailResponse>>builder()
@@ -39,6 +53,8 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-count-salary-detail")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+            "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<Integer> getCountSalaryDetail(@RequestBody EmployeeFilter filter) {
         int responses = salaryTableService.getCountSalaryDetail(filter);
         return ResponseData.<Integer>builder()
@@ -49,6 +65,8 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-list-tax")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+                                    "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<List<TaxResponse>> getListTax(@RequestBody EmployeeFilter filter) {
         List<TaxResponse> responses = salaryTableService.getListTax(filter);
         return ResponseData.<List<TaxResponse>>builder()
@@ -59,6 +77,8 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-count-tax")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+                                    "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<Integer> getCountTax(@RequestBody EmployeeFilter filter) {
         int responses = salaryTableService.getCountTax(filter);
         return ResponseData.<Integer>builder()
@@ -67,6 +87,4 @@ public class SalaryTableController {
                 .message("Get list salary table successfully")
                 .build();
     }
-
-
 }

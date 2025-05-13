@@ -28,8 +28,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class AppConfig {
-//    private final String[] WHITE_LIST = {"/auth/**"};
-    private final String[] WHITE_LIST = {"/**"};
+    private final String[] WHITE_LIST = {"/auth/**", "/department/**", "/allowance/**", "/job-position/**", "/letter-reason/**"};
+//    private final String[] WHITE_LIST = {"/**"};
 
     private final UserService userService;
 
@@ -67,6 +67,8 @@ public class AppConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer :: disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(provider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);

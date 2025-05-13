@@ -1,6 +1,7 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.family.request.FamilyRequest;
@@ -16,6 +17,9 @@ public class FamilyController {
     private final FamilyService familyService;
 
     @PostMapping("/get-family-profile-employee")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
+                                "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
+                                "'ROLE_WATCH_SELF_EMPLOYEE')")
     public ResponseData<List<FamilyResponse>> getFamilyOfEmployee(@RequestParam("employeeId") long employeeId) {
         List<FamilyResponse> response = familyService.getFamilyOfEmployee(employeeId);
         return ResponseData.<List<FamilyResponse>>builder()
@@ -26,6 +30,8 @@ public class FamilyController {
     }
 
     @PostMapping("/update-family-profile-employee")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
+                                "'ROLE_MANAGE_SELF_EMPLOYEE')")
     public ResponseData<Void> updateFamilyOfEmployee(@RequestBody List<FamilyRequest> requests) {
         familyService.updateFamilyOfEmployee(requests);
         return ResponseData.<Void>builder()

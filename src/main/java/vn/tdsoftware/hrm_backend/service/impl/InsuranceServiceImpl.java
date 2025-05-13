@@ -9,6 +9,7 @@ import vn.tdsoftware.hrm_backend.dto.insurance.response.InsuranceResponse;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.repository.InsuranceRepository;
 import vn.tdsoftware.hrm_backend.service.InsuranceService;
+import vn.tdsoftware.hrm_backend.util.PerInsuranceUtil;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InsuranceServiceImpl implements InsuranceService {
     private final InsuranceDAO insuranceDAO;
+    private final PerInsuranceUtil perInsuranceUtil;
 
     @Override
     public List<InsuranceResponse> getListInsurance(EmployeeFilter filter) {
+        perInsuranceUtil.checkSameDepartmentByFilter(filter);
         List<InsuranceResponse> listResponse = insuranceDAO.getListInsurance(filter);
         if (listResponse.isEmpty()) {
             throw new BusinessException(ErrorCode.INSURANCE_IS_EMPTY);
@@ -28,6 +31,7 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public int getCountInsurance(EmployeeFilter filter) {
+        perInsuranceUtil.checkSameDepartmentByFilter(filter);
         return insuranceDAO.getCountInsurance(filter);
     }
 }

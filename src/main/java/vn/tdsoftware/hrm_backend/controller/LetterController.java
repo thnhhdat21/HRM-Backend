@@ -2,6 +2,7 @@ package vn.tdsoftware.hrm_backend.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
@@ -22,27 +23,9 @@ import java.util.List;
 public class LetterController {
     private final LetterService letterService;
 
-    @PostMapping("/get-list-letter")
-    public ResponseData<List<LetterResponse>> getListLetter(@RequestBody EmployeeFilter filter) {
-        List<LetterResponse> responses =  letterService.getListLetter(filter);
-        return ResponseData.<List<LetterResponse>>builder()
-                .code(1000)
-                .data(responses)
-                .message("success")
-                .build();
-    }
-
-    @PostMapping("/get-count-letter")
-    public ResponseData<List<CountLetterResponse>> getCountLetter (@RequestBody EmployeeFilter filter) {
-        List<CountLetterResponse> responses =  letterService.getCountLetter(filter);
-        return ResponseData.<List<CountLetterResponse>>builder()
-                .code(1000)
-                .data(responses)
-                .message("success")
-                .build();
-    }
-
     @PostMapping("/update-leave-letter")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
+                                    "'ROLE_CREATE_SELF_LETTER')")
     public ResponseData<Void> updateLeaveLetter (@RequestBody LeaveLetterRequest request) {
         letterService.updateLeaveLetter(request);
         return ResponseData.<Void>builder()
@@ -52,6 +35,8 @@ public class LetterController {
     }
 
     @PostMapping("/update-overtime-letter")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
+            "'ROLE_CREATE_SELF_LETTER')")
     public ResponseData<Void> updateOverTimeLetter (@RequestBody OverTimeLetterRequest request) {
         letterService.updateOverTimeLetter(request);
         return ResponseData.<Void>builder()
@@ -61,6 +46,8 @@ public class LetterController {
     }
 
     @PostMapping("/update-worktime-letter")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
+            "'ROLE_CREATE_SELF_LETTER')")
     public ResponseData<Void> updateWorkTimeLetter (@RequestBody WorkTimeLetterRequest request) {
         letterService.updateWorkTimeLetter(request);
         return ResponseData.<Void>builder()
@@ -71,6 +58,8 @@ public class LetterController {
 
 
     @PostMapping("/update-inout-endwork-letter")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
+                                    "'ROLE_CREATE_SELF_LETTER')")
     public ResponseData<Void> updateInOutAndEndWorkLetter (@RequestBody InOutAndEndWorkRequest request) {
         letterService.updateInOutAndEndWorkLetter(request);
         return ResponseData.<Void>builder()
@@ -80,6 +69,9 @@ public class LetterController {
     }
 
     @PostMapping("/delete-letter")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_LETTER_COMPANY'," +
+                                    "'ROLE_MANAGE_LETTER_DEPARTMENT', " +
+                                    "'ROLE_MANAGE_SELF_LETTER')")
     public ResponseData<Void> deleteLetter(@RequestParam long letterId) {
         letterService.deleteLetter(letterId);
         return ResponseData.<Void>builder()
@@ -89,6 +81,9 @@ public class LetterController {
     }
 
     @PostMapping("/get-letter-by-id")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
+                                    "'ROLE_WATCH_LETTER_DEPARTMENT', " +
+                                    "'ROLE_WATCH_SELF_LETTER')")
     public ResponseData<Object> getLetterBy(@RequestParam long letterId) {
         Object response = letterService.getLetter(letterId);
         return ResponseData.builder()
@@ -97,24 +92,4 @@ public class LetterController {
                 .message("success")
                 .build();
     }
-
-    @PostMapping("/no-approve-letter")
-    public ResponseData<Void> noApproveLetter(@RequestParam long letterId) {
-        letterService.noApprovalLetter(letterId);
-        return ResponseData.<Void>builder()
-                .code(1000)
-                .message("success")
-                .build();
-    }
-
-    @PostMapping("/approve-letter")
-    public ResponseData<Void> approveLetter(@RequestParam long letterId) {
-        letterService.approveLetter(letterId);
-        return ResponseData.<Void>builder()
-                .code(1000)
-                .message("approve successfully")
-                .build();
-    }
-
-
 }

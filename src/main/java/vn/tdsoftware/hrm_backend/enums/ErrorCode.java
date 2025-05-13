@@ -152,7 +152,12 @@ public enum ErrorCode {
     ACCESS_TOKEN_IN_BLACKLIST(1128, "Access token trong blacklist"),
     REFRESH_TOKEN_IN_BLACKLIST(1129, "Refesh token trong blacklist"),
     REFRESH_TOKEN_IN_VALID(1130, "Refesh token không hợp lệ"),
-
+    NO_PERMISSION_DEPARTMENT_OTHER(1131, "Không có quyền đối với nhân sự phòng ban khác"),
+    NO_PERMISSION_MANAGE(1132, "Không có quyền quản lý"),
+    NO_PERMISSION_CREATE(1133, "Không có quyền tạo mới"),
+    NO_PERMISSION_WATCH_EMPLOYEE_OTHER(1133, "Không có quyền xem thông tin nhân sự khác"),
+    NO_PERMISSION_MANAGE_EMPLOYEE_OTHER(1133, "Không có quyền cập nhật thông tin nhân sự khác"),
+    NO_APPROVE_SELF(1133, "Không thể thao tác với cá nhân"),
 
     ;
 

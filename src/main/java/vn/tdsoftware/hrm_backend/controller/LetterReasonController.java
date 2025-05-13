@@ -25,43 +25,4 @@ public class LetterReasonController {
                 .message("get list letter-reason")
                 .build();
     }
-
-    @PostMapping("/create-letter-reason")
-    public ResponseData<List<LetterReasonResponse>> createLetterReason(@RequestBody List<LetterReasonRequest> request) {
-        List<LetterReasonResponse> response = letterReasonService.createLetterReason(request);
-        return ResponseData.<List<LetterReasonResponse>>builder()
-                .code(1000)
-                .data(response)
-                .message("Create letter-reason")
-                .build();
-    }
-
-    @PostMapping("/update-letter-reason")
-    public ResponseData<LetterReasonResponse> updateLetterReason(@RequestBody LetterReasonRequest request) {
-        LetterReasonResponse response = letterReasonService.updateLetterReason(request);
-        return ResponseData.<LetterReasonResponse>builder()
-                .code(1000)
-                .data(response)
-                .message("Update letter-reason")
-                .build();
-    }
-
-    @PostMapping("/delete-letter-reason")
-    public ResponseData<Void> deleteLetterReason(@RequestParam("id") Long id) {
-        letterReasonService.deleteLetterReason(id);
-        return ResponseData.<Void>builder()
-                .code(1000)
-                .message("Update letter-reason")
-                .build();
-    }
-
-    @PostMapping("/get-letter-reason-detail")
-    public ResponseData<LetterReasonDetail> getLetterReasonDetail(@RequestParam("id") Long id) {
-        LetterReasonDetail response = letterReasonService.getLetterReasonDetail(id);
-        return ResponseData.<LetterReasonDetail>builder()
-                .code(1000)
-                .data(response)
-                .message("Update letter-reason")
-                .build();
-    }
 }

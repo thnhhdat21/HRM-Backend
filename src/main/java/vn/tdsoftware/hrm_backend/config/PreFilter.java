@@ -57,6 +57,7 @@ public class PreFilter extends OncePerRequestFilter {
 
         final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
         List<String> permissions = jwtService.extractPermissions(token);
+        Long departmentId = jwtService.extractDepartment(token);
 
         List<GrantedAuthority> authorities = permissions
                 .stream()
@@ -75,7 +76,7 @@ public class PreFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
 
                 // set cho user Hien tai
-                CurrentAccountDTO.create(((Account) userDetails).getEmployeeId());
+                CurrentAccountDTO.create(((Account) userDetails).getEmployeeId(), departmentId ,permissions);
                 log.info("CurrentAccountDTO: {}", CurrentAccountDTO.getEmployeeId());
             }
         }

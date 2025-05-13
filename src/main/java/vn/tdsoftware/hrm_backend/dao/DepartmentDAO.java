@@ -11,4 +11,5 @@ public interface DepartmentDAO {
    List<DepartmentTreeResponse> findAll();
    int countEmployeeInDepartment(Long id);
    void deleteDepartment(Long id);
+   Long getDepartmentByEmployeeId(long employeeId);
 }

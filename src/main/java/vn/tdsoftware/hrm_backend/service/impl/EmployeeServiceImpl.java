@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.EmployeeDAO;
 import vn.tdsoftware.hrm_backend.dao.LetterDAO;
+import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.dto.employee.request.*;
 import vn.tdsoftware.hrm_backend.dto.employee.response.*;
 import vn.tdsoftware.hrm_backend.dto.letter.response.WorkTimeEmployee;
@@ -23,6 +24,7 @@ import vn.tdsoftware.hrm_backend.repository.*;
 import vn.tdsoftware.hrm_backend.service.*;
 import vn.tdsoftware.hrm_backend.common.service.MinIOService;
 import vn.tdsoftware.hrm_backend.util.EmployeeUtil;
+import vn.tdsoftware.hrm_backend.util.PerEmployeeUtil;
 import vn.tdsoftware.hrm_backend.util.SalaryUtil;
 import vn.tdsoftware.hrm_backend.util.constant.AddressConstant;
 import vn.tdsoftware.hrm_backend.util.constant.EmployeeConstant;
@@ -51,6 +53,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final FamilyService familyService;
     private final ContractService contractService;
     private final AccountService accountService;
+    private final PerEmployeeUtil perEmployeeUtil;
+    private final SalaryTableDetailRepository salaryTableDetailRepository;
 
     @Override
     public List<EmployeeOfDepartment> getListEmployeeFilter(EmployeeFilter filter) {
@@ -85,6 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResumeProfileResponse getResumeProfile(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         checkEmployeeValidator(employeeId);
         ResumeProfileResponse response = employeeDAO.getResumeProfile(employeeId);
         if (response == null) {
@@ -96,6 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void updateResumeProfile(ResumeProfileRequest request) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(request.getId());
         Employee employeeEntity =  new Employee();
         if (request.getId() != null) {
             employeeEntity = checkEmployeeValidator(request.getId());
@@ -105,6 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void updateIdentityCard(IdentityCartRequest request) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(request.getEmployeeId());
         Employee employee = checkEmployeeValidator(request.getEmployeeId());
         if(request.getFontIdCard() != null) {
             String fileName = "/" + employee.getEmployeeCode() + "/" + request.getFontIdCard().getOriginalFilename();
@@ -303,6 +310,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void updateInsurance(InsuranceEmployeeRequest request) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(request.getEmployeeId());
         Employee employee = checkEmployeeValidator(request.getEmployeeId());
         employee.setInsuranceNumber(request.getInsuranceNumber());
         employee.setInsuranceCard(request.getInsuranceCard());
@@ -311,6 +319,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public InsuranceEmployeeResponse getInsuranceNumber(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         Employee employee = checkEmployeeValidator(employeeId);
         return InsuranceEmployeeResponse.builder()
                 .employeeId(employee.getId())
@@ -321,6 +330,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<SalaryMonth> getListSalaryEmployee(long employeeId, String year) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         List<SalaryMonth> listSalary = employeeDAO.getListSalaryEmployee(employeeId, year);
         List<SalaryMonth> result = new ArrayList<>();
         int month = 1;
@@ -346,6 +356,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public SalaryDetailResponse getSalaryDetailEmployee(long salaryDetailId) {
+        SalaryTableDetail salaryTableDetail = salaryTableDetailRepository.findByIdAndIsEnabled(salaryDetailId, true).orElseThrow(
+                () -> new BusinessException(ErrorCode.SALARY_DETAIL_IS_EMPTY));
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(salaryTableDetail.getEmployeeId());
         SalaryDetailResponse response = employeeDAO.getSalaryDetailEmployee(salaryDetailId);
         if (response == null) {
             throw new BusinessException(ErrorCode.SALARY_DETAIL_IS_EMPTY);
@@ -355,6 +368,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public SalaryAllowanceEmployee getSalaryAllowanceEmployee(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         SalaryAllowanceEmployee response = employeeDAO.getSalaryAllowanceEmployee(employeeId);
         if (response == null) {
             throw new BusinessException(ErrorCode.SALARY_DETAIL_IS_EMPTY);

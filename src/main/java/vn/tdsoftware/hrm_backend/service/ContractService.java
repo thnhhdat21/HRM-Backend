@@ -16,9 +16,6 @@ public interface ContractService {
     ContractDetailResponse getContractDetail(long contractId);
     void updateContract(ContractRequest contractRequest);
     void createContract(ContractRequest contractRequest);
-    void checkedContract(long contractId);
-    void noCheckedContract(long contractId);
-    void signContract(long contractId);
     List<ContractOfEmployeeResponse> getListContractOfEmployee(long employeeId);
     List<ContractResponse> getListContract(EmployeeFilter filter);
     void endContract(EndContractRequest request);

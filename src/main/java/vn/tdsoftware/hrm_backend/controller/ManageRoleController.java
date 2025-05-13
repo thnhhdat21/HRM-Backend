@@ -13,9 +13,9 @@ import vn.tdsoftware.hrm_backend.service.RoleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/admin/role")
 @RequiredArgsConstructor
-public class RoleController {
+public class ManageRoleController {
     private final RoleService roleService;
 
     @PostMapping("/list-role")

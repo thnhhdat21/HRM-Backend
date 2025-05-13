@@ -11,9 +11,9 @@ import vn.tdsoftware.hrm_backend.service.DutyService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/duty")
+@RequestMapping("/admin/duty")
 @RequiredArgsConstructor
-public class DutyController {
+public class ManageDutyController {
     private final DutyService dutyService;
     private final Gson gson;
 

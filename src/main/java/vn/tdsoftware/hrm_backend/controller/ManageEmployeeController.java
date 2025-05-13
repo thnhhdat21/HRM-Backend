@@ -1,12 +1,11 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
+import vn.tdsoftware.hrm_backend.dto.employee.request.FullEmployeeRequest;
 import vn.tdsoftware.hrm_backend.dto.employee.response.EmployeeOfDepartment;
 import vn.tdsoftware.hrm_backend.dto.employee.response.EmployeeTypeCount;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
@@ -36,6 +35,20 @@ public class ManageEmployeeController {
                 .code(1000)
                 .data(responses)
                 .message("Get List employee successfully")
+                .build();
+    }
+
+    @PostMapping("/create-employee")
+    public ResponseData<Void> createEmployee(
+            @RequestPart("fullEmployeeRequest") FullEmployeeRequest resume,
+            @RequestPart("avatar") MultipartFile avatar,
+            @RequestPart("backIdentityCard") MultipartFile backIdentityCard,
+            @RequestPart("fontIdentityCard") MultipartFile fontIdentityCard
+    ) {
+        employeeService.createEmployee(resume, avatar, fontIdentityCard, backIdentityCard);
+        return ResponseData.<Void>builder()
+                .code(1000)
+                .message("Get profile successfully")
                 .build();
     }
 }

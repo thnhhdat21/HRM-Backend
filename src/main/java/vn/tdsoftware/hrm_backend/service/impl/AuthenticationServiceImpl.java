@@ -52,8 +52,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String accessToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
 
-
-
         //Lưu token vào redis
         tokenService.storeTokens(account.getUsername(), accessToken, refreshToken);
 

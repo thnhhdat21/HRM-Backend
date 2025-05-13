@@ -12,7 +12,7 @@ import vn.tdsoftware.hrm_backend.dto.insurancesetting.response.InsuranceSettingR
 import vn.tdsoftware.hrm_backend.service.InsuranceSettingService;
 
 @RestController
-@RequestMapping("/insurance-setting")
+@RequestMapping("/admin/insurance-setting")
 @RequiredArgsConstructor
 public class InsuranceSettingController {
     private final InsuranceSettingService insuranceSettingService;
@@ -30,7 +30,6 @@ public class InsuranceSettingController {
 
     @PostMapping("/update-setting")
     public ResponseData<InsuranceSettingResponse> update(@RequestBody InsuranceSettingRequest request) {
-        System.out.println(gson.toJson(request));
         InsuranceSettingResponse response = insuranceSettingService.updateInsuranceSetting(request);
         return ResponseData.<InsuranceSettingResponse>builder()
                 .code(1000)

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.DecisionDAO;
+import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.dto.contract.request.ContractHasAllowanceRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.ContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.EndContractRequest;
@@ -28,6 +29,7 @@ import vn.tdsoftware.hrm_backend.service.ContractService;
 import vn.tdsoftware.hrm_backend.service.DecisionService;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.util.DecisionUtil;
+import vn.tdsoftware.hrm_backend.util.PerDecisionUtil;
 import vn.tdsoftware.hrm_backend.util.constant.ContractConstant;
 import vn.tdsoftware.hrm_backend.util.constant.DecisionConstant;
 import vn.tdsoftware.hrm_backend.util.constant.UpdateTypeConstant;
@@ -51,9 +53,11 @@ public class DecisionServiceImpl implements DecisionService {
     private final SalaryDecisionHasAllowanceRepository salaryDecisionHasAllowanceRepository;
     private final DecisionDAO decisionDAO;
     private final ContractService contractService;
+    private final PerDecisionUtil perDecisionUtil;
 
     @Override
     public List<DecisionResponse> getListDecision(EmployeeFilter filter) {
+        perDecisionUtil.checkSameDepartmentByFilter(filter);
         List<DecisionResponse> responses = decisionDAO.getListDecision(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.DECISION_IS_EMPTY);
@@ -63,6 +67,7 @@ public class DecisionServiceImpl implements DecisionService {
 
     @Override
     public List<CountDecisionResponse> getCountDecision(EmployeeFilter filter) {
+        perDecisionUtil.checkSameDepartmentByFilter(filter);
         List<CountDecisionResponse> responses = decisionDAO.getCountDecision(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.DECISION_IS_EMPTY);
@@ -102,7 +107,7 @@ public class DecisionServiceImpl implements DecisionService {
     public void updateRewardAndPenaltyDecision(RewardAndPenaltyDecisionRequest request) {
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getCode(), request.getDate());
-
+        perDecisionUtil.checkManageOrCreateEmployee(request.getDecisionId());
         Decision decision = decisionRepository.findByIdAndIsEnabled(request.getDecisionId(), true).orElse(new Decision());
         RewardAndPenalty rewardAndPenalty = rewardAndPenaltyRepository.findByIdAndIsEnabled(request.getRewardAndPenaltyId(), true).orElseThrow(
                 () -> new BusinessException(ErrorCode.REWARD_OR_PENALTY_IS_EMPTY)
@@ -126,6 +131,7 @@ public class DecisionServiceImpl implements DecisionService {
     @Override
     @Transactional
     public void updateTransferAndAppointmentDecision(TransferDecisionRequest request) {
+        perDecisionUtil.checkManageOrCreateEmployee(request.getDecisionId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getCode(), request.getDate());
         Decision decision = decisionRepository.findByIdAndIsEnabled(request.getDecisionId(), true).orElse(new Decision());
@@ -156,6 +162,7 @@ public class DecisionServiceImpl implements DecisionService {
     @Override
     @Transactional
     public void updateSalaryDecision(SalaryDecisionRequest request) {
+        perDecisionUtil.checkManageOrCreateEmployee(request.getDecisionId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getCode(), request.getDateDecision());
         validatorSalary(request.getReason(), request.getDateActive());
@@ -210,6 +217,7 @@ public class DecisionServiceImpl implements DecisionService {
 
     @Override
     public void updateTerminationDecision(TerminationDecisionRequest request) {
+        perDecisionUtil.checkManageOrCreateEmployee(request.getDecisionId());
         validator(request.getCode(), request.getDate());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         Decision decision = decisionRepository.findByIdAndIsEnabled(request.getDecisionId(), true).orElse(new Decision());
@@ -269,6 +277,7 @@ public class DecisionServiceImpl implements DecisionService {
 
     @Override
     public Object getDecisionById(long decisionId) {
+        perDecisionUtil.checkSameDepartmentDecisionId(decisionId);
         Decision decision = decisionRepository.findById(decisionId).orElseThrow(
                 () -> new BusinessException(ErrorCode.DECISION_IS_EMPTY)
         );

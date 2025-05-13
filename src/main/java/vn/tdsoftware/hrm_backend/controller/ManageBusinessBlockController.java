@@ -11,9 +11,9 @@ import vn.tdsoftware.hrm_backend.service.BusinessBlockService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business")
+@RequestMapping("/admin/business")
 @RequiredArgsConstructor
-public class BusinessBlockController {
+public class ManageBusinessBlockController {
     private final BusinessBlockService businessService;
 
     @PostMapping("/get-business-block")

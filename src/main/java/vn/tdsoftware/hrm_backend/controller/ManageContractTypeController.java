@@ -2,6 +2,7 @@ package vn.tdsoftware.hrm_backend.controller;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.contracttype.request.ContractTypeRequest;
@@ -15,9 +16,9 @@ import vn.tdsoftware.hrm_backend.service.ContractTypeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/contract-type")
+@RequestMapping("/admin/contract-type")
 @RequiredArgsConstructor
-public class ContractTypeController {
+public class ManageContractTypeController {
     private final ContractTypeService contractTypeService;
     private final Gson gson;
 

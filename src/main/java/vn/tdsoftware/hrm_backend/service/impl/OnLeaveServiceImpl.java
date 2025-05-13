@@ -14,6 +14,8 @@ import vn.tdsoftware.hrm_backend.mapper.OnLeaveMapper;
 import vn.tdsoftware.hrm_backend.repository.OnLeaveRepository;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.OnLeaveService;
+import vn.tdsoftware.hrm_backend.util.PerEmployeeUtil;
+import vn.tdsoftware.hrm_backend.util.PerTimeSheetUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,9 +26,12 @@ public class OnLeaveServiceImpl implements OnLeaveService {
     private final OnLeaveRepository onleaveRepository;
     private final EmployeeService employeeService;
     private final OnLeaveDAO onLeaveDAO;
+    private final PerEmployeeUtil perEmployeeUtil;
+    private final PerTimeSheetUtil perTimeSheetUtil;
 
     @Override
     public OnLeaveResponse getOnLeaveProfile(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         employeeService.checkEmployeeValidator(employeeId);
         int currentYear = LocalDate.now().getYear();
         OnLeave onLeave = onleaveRepository.findByEmployeeIdAndYearAndIsEnabled(employeeId, currentYear, true).orElseThrow(
@@ -37,6 +42,7 @@ public class OnLeaveServiceImpl implements OnLeaveService {
 
     @Override
     public void updateOnLeaveProfile(OnLeaveRequest request) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(request.getEmployeeId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         int currentYear = LocalDate.now().getYear();
         OnLeave onLeave = onleaveRepository.findByEmployeeIdAndYearAndIsEnabled(request.getEmployeeId(), currentYear, true).orElseThrow(
@@ -53,6 +59,7 @@ public class OnLeaveServiceImpl implements OnLeaveService {
 
     @Override
     public List<EmployeeOnLeaveResponse> getEmployeeOnLeave(EmployeeFilter filter) {
+        perTimeSheetUtil.checkSameDepartmentByFilter(filter);
         List<EmployeeOnLeaveResponse> responses = onLeaveDAO.getEmployeeOnLeave(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.ON_LEAVE_IS_EMPTY);
@@ -62,6 +69,7 @@ public class OnLeaveServiceImpl implements OnLeaveService {
 
     @Override
     public int getCountEmployee(EmployeeFilter filter) {
+        perTimeSheetUtil.checkSameDepartmentByFilter(filter);
         return onLeaveDAO.getCountEmployee(filter);
     }
 }

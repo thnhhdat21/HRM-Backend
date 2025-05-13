@@ -19,9 +19,7 @@ import vn.tdsoftware.hrm_backend.service.UserService;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final AuthenticationService authenticationService;
-
     @PostMapping("/login")
     public ResponseData<TokenResponse> login(@RequestBody LoginRequest request) {
         TokenResponse response = authenticationService.authenticate(request);

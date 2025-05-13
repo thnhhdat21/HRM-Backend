@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.ContractDAO;
+import vn.tdsoftware.hrm_backend.dao.DepartmentDAO;
+import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.dto.contract.request.ContractHasAllowanceRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.ContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.EndContractRequest;
@@ -14,6 +16,8 @@ import vn.tdsoftware.hrm_backend.entity.*;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.repository.*;
 import vn.tdsoftware.hrm_backend.service.ContractService;
+import vn.tdsoftware.hrm_backend.util.PerContractUtil;
+import vn.tdsoftware.hrm_backend.util.PerEmployeeUtil;
 import vn.tdsoftware.hrm_backend.util.constant.ContractConstant;
 import vn.tdsoftware.hrm_backend.util.constant.EmployeeConstant;
 import vn.tdsoftware.hrm_backend.util.constant.InsuranceUtil;
@@ -37,11 +41,14 @@ public class ContractServiceImpl implements ContractService {
     private final ContractGeneralRepository contractGeneralRepository;
     private final ContractGeneralHasAllowanceRepository contractgeneralHasAllowanceRepository;
     private final InsuranceRepository insuranceRepository;
+    private final PerContractUtil perContractUtil;
 
     @Override
     public WorkProfileResponse getWorkProfile(long employeeId) {
         checkEmployeeValidator(employeeId);
+        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
         WorkProfileResponse response = contractDAO.getWorkProfile(employeeId);
+
         if (response == null) {
             throw new BusinessException(ErrorCode.WORK_IS_EMPTY);
         }
@@ -51,6 +58,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<WorkProcessResponse> getWorkProcess(long employeeId) {
         checkEmployeeValidator(employeeId);
+        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
         List<WorkProcessResponse> response = contractDAO.getWorkProcess(employeeId);
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.CONTRACT_HISTORY_IS_EMPTY);
@@ -61,6 +69,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ContractProfileResponse getContractProfileByEmployee(long employeeId) {
         checkEmployeeValidator(employeeId);
+        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
         ContractProfileResponse response = contractDAO.getContractProfileByEmployee(employeeId);
         if (response == null) {
             throw new BusinessException(ErrorCode.CONTRACT_IS_EMPTY);
@@ -70,6 +79,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ContractProfileResponse getContractProfileByContractId(long contractId) {
+        perContractUtil.checkSameDepartmentByContractId(contractId);
         ContractProfileResponse response = contractDAO.getContractProfileByContractId(contractId);
         if (response == null) {
             throw new BusinessException(ErrorCode.CONTRACT_HISTORY_IS_EMPTY);
@@ -79,6 +89,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ContractDetailResponse getContractDetail(long contractId) {
+        perContractUtil.checkSameDepartmentByContractId(contractId);
         ContractDetailResponse response = contractDAO.getContractDetail(contractId);
         if (response == null) {
             throw new BusinessException(ErrorCode.CONTRACT_HISTORY_IS_EMPTY);
@@ -196,22 +207,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void checkedContract(long contractId) {
-//        contractActivities(contractId, ContractConstant.CONTRACT_STATE_CHECKED, HistoryConstant.HISTORY_CHECKED);
-    }
-
-    @Override
-    public void noCheckedContract(long contractId) {
-//        contractActivities(contractId, ContractConstant.CONTRACT_STATE_NO_CHECKED, HistoryConstant.HISTORY_NO_CHECKED);
-    }
-
-    @Override
-    public void signContract(long contractId) {
-//        contractActivities(contractId, ContractConstant.CONTRACT_STATE_SIGNED, HistoryConstant.HISTORY_SIGNED);
-    }
-
-    @Override
     public List<ContractOfEmployeeResponse> getListContractOfEmployee(long employeeId) {
+        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
         List<ContractOfEmployeeResponse> listAppendix = contractDAO.getListContractOfEmployee(employeeId);
         if (listAppendix.isEmpty()) {
             throw new BusinessException(ErrorCode.CONTRACT_HISTORY_IS_EMPTY);
@@ -221,6 +218,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<ContractResponse> getListContract(EmployeeFilter filter) {
+        perContractUtil.checkSameDepartmentByFilter(filter);
         List<ContractResponse> responses = contractDAO.getListContract(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.CONTRACT_IS_EMPTY);
@@ -287,6 +285,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public int countContractAppendix(long contractId) {
+        perContractUtil.checkSameDepartmentByContractId(contractId);
         return contractDAO.countContractAppendix(contractId);
     }
 

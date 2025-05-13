@@ -27,6 +27,7 @@ import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.LetterService;
 import vn.tdsoftware.hrm_backend.service.TimeSheetService;
 import vn.tdsoftware.hrm_backend.util.LetterUtil;
+import vn.tdsoftware.hrm_backend.util.PerLetterUtil;
 import vn.tdsoftware.hrm_backend.util.constant.LetterConstant;
 
 import java.time.*;
@@ -51,9 +52,11 @@ public class LetterServiceImpl implements LetterService {
     private final TimeKeepingHasLetterRepository timeKeepingHasLetterRepository;
     private final TimeSheetService timeSheetService;
     private final OnLeaveRepository onLeaveRepository;
+    private final PerLetterUtil perLetterUtil;
 
     @Override
     public List<LetterResponse> getListLetter(EmployeeFilter filter) {
+        perLetterUtil.checkSameDepartmentByFilter(filter);
         List<LetterResponse> response = letterDAO.getListLetter(filter);
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.LETTER_IS_EMPTY);
@@ -63,6 +66,7 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     public List<CountLetterResponse> getCountLetter(EmployeeFilter filter) {
+        perLetterUtil.checkSameDepartmentByFilter(filter);
         List<CountLetterResponse> responses = letterDAO.getCountLetter(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.LETTER_IS_EMPTY);
@@ -73,6 +77,8 @@ public class LetterServiceImpl implements LetterService {
     @Override
     @Transactional
     public void updateLeaveLetter(LeaveLetterRequest request) {
+        perLetterUtil.checkSameEmployee(request.getEmployeeId());
+        perLetterUtil.checkManageOrCreateLetter(request.getLetterId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getDateStart(), request.getDateEnd(), request.getTotal());
 
@@ -96,6 +102,8 @@ public class LetterServiceImpl implements LetterService {
     @Override
     @Transactional
     public void updateOverTimeLetter(OverTimeLetterRequest request) {
+        perLetterUtil.checkSameEmployee(request.getEmployeeId());
+        perLetterUtil.checkManageOrCreateLetter(request.getLetterId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getTimeStart(), request.getTimeEnd(), request.getTotal());
 
@@ -123,6 +131,8 @@ public class LetterServiceImpl implements LetterService {
     @Override
     @Transactional
     public void updateWorkTimeLetter(WorkTimeLetterRequest request) {
+        perLetterUtil.checkSameEmployee(request.getEmployeeId());
+        perLetterUtil.checkManageOrCreateLetter(request.getLetterId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         validator(request.getDateStart().atStartOfDay(), request.getDateEnd().atStartOfDay(), null);
 
@@ -143,6 +153,8 @@ public class LetterServiceImpl implements LetterService {
     @Override
     @Transactional
     public void updateInOutAndEndWorkLetter(InOutAndEndWorkRequest request) {
+        perLetterUtil.checkSameEmployee(request.getEmployeeId());
+        perLetterUtil.checkManageOrCreateLetter(request.getLetterId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         Letter letter =  saveLetter(request.getLetterId(),
                 request.getLetterReasonId(),
@@ -170,6 +182,7 @@ public class LetterServiceImpl implements LetterService {
     public void deleteLetter(long letterId) {
         Letter letter = letterRepository.findByIdAndIsEnabled(letterId, true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.LETTER_IS_EMPTY));
+        perLetterUtil.checkManageSameDepartmentByEmployeeId(letter.getEmployeeId());
 
         LetterReason letterReason = reasonRepository.findByIdAndIsEnabled(letter.getReasonId(), true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REASON_IS_EMPTY));
@@ -190,6 +203,7 @@ public class LetterServiceImpl implements LetterService {
     public void noApprovalLetter(long letterId) {
         Letter letter = letterRepository.findByIdAndIsEnabled(letterId, true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.LETTER_IS_EMPTY));
+        perLetterUtil.checkApproveSameDepartmentByEmployeeId(letter.getEmployeeId());
         letter.setState(LetterConstant.LETTER_STATE_NO_APPROVE);
         letterRepository.save(letter);
     }
@@ -198,7 +212,7 @@ public class LetterServiceImpl implements LetterService {
     public Object getLetter(long letterId) {
         Letter letter = letterRepository.findByIdAndIsEnabled(letterId, true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.LETTER_IS_EMPTY));
-
+        perLetterUtil.checkWatchSameDepartmentByEmployeeId(letter.getEmployeeId());
         LetterReason letterReason = reasonRepository.findByIdAndIsEnabled(letter.getReasonId(), true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REASON_IS_EMPTY));
 
@@ -228,7 +242,7 @@ public class LetterServiceImpl implements LetterService {
     public void approveLetter(long letterId) {
         Letter letter = letterRepository.findByIdAndIsEnabled(letterId, true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.LETTER_IS_EMPTY));
-
+        perLetterUtil.checkApproveSameDepartmentByEmployeeId(letter.getEmployeeId());
         LetterReason letterReason = letterReasonRepository.findByIdAndIsEnabled(letter.getReasonId(), true)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REASON_IS_EMPTY));
 

@@ -3,7 +3,9 @@ package vn.tdsoftware.hrm_backend.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
+import vn.tdsoftware.hrm_backend.dao.SalaryTableDAO;
 import vn.tdsoftware.hrm_backend.dao.SalaryTableDetailDAO;
+import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.dto.salarytable.response.*;
 import vn.tdsoftware.hrm_backend.entity.SalaryTable;
@@ -11,6 +13,7 @@ import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.mapper.SalaryTableMapper;
 import vn.tdsoftware.hrm_backend.repository.SalaryTableRepository;
 import vn.tdsoftware.hrm_backend.service.SalaryTableService;
+import vn.tdsoftware.hrm_backend.util.PerSalaryUtil;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -22,7 +25,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SalaryTableServiceImpl implements SalaryTableService {
     private final SalaryTableRepository salaryTableRepository;
+    private final SalaryTableDAO salaryTableDAO;
     private final SalaryTableDetailDAO salaryTableDetailDAO;
+    private final PerSalaryUtil perSalaryUtil;
 
     @Override
     public List<SalaryTableResponse> getListSalaryTable() {
@@ -37,7 +42,17 @@ public class SalaryTableServiceImpl implements SalaryTableService {
     }
 
     @Override
+    public List<SalaryTableResponse> getListSalaryTableOfDepartment() {
+        List<SalaryTableResponse> salaryTableResponseList = salaryTableDAO.getListSalaryTableOfDepartment(CurrentAccountDTO.getDepartmentId());
+        if (salaryTableResponseList.isEmpty()){
+            throw new BusinessException(ErrorCode.SALARY_TABLE_IS_EMPTY);
+        }
+        return salaryTableResponseList;
+    }
+
+    @Override
     public List<SalaryDetailResponse> getListSalaryDetail(EmployeeFilter filter) {
+        perSalaryUtil.checkSameDepartmentByFilter(filter);
         List<SalaryDetailResponse> response = salaryTableDetailDAO.getListSalaryDetail(filter);
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.SALARY_TABLE_IS_EMPTY);
@@ -47,11 +62,13 @@ public class SalaryTableServiceImpl implements SalaryTableService {
 
     @Override
     public int getCountSalaryDetail(EmployeeFilter filter) {
+        perSalaryUtil.checkSameDepartmentByFilter(filter);
         return salaryTableDetailDAO.getCountSalaryDetail(filter);
     }
 
     @Override
     public List<TaxResponse> getListTax(EmployeeFilter filter) {
+        perSalaryUtil.checkSameDepartmentByFilter(filter);
         List<TaxDTO> listTax = salaryTableDetailDAO.getListTax(filter);
         List<TaxResponse> taxResponseList = new ArrayList<>();
         Set<String> employeeCodes = new HashSet<>();
@@ -95,6 +112,7 @@ public class SalaryTableServiceImpl implements SalaryTableService {
 
     @Override
     public int getCountTax(EmployeeFilter filter) {
+        perSalaryUtil.checkSameDepartmentByFilter(filter);
         return salaryTableDetailDAO.getCountTax(filter);
     }
 }

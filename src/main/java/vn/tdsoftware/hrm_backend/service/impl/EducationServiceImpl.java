@@ -13,6 +13,7 @@ import vn.tdsoftware.hrm_backend.mapper.EducationMapper;
 import vn.tdsoftware.hrm_backend.repository.EducationRepository;
 import vn.tdsoftware.hrm_backend.repository.EmployeeRepository;
 import vn.tdsoftware.hrm_backend.service.EducationService;
+import vn.tdsoftware.hrm_backend.util.PerEmployeeUtil;
 import vn.tdsoftware.hrm_backend.util.constant.UpdateTypeConstant;
 
 import java.util.ArrayList;
@@ -24,9 +25,11 @@ import java.util.Objects;
 public class EducationServiceImpl implements EducationService {
     private final EducationRepository educationRepository;
     private final EmployeeRepository employeeRepository;
+    private final PerEmployeeUtil perEmployeeUtil;
 
     @Override
     public List<EducationResponse> getEducationProfile(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         employeeRepository.findByIdAndIsEnabled(employeeId, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY)
         );
@@ -43,6 +46,7 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public void updateEducationProfile(List<EducationRequest> requests) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(requests.get(0).getEmployeeId());
         if (requests.isEmpty()) {
             throw new BusinessException(ErrorCode.LIST_EDUCATION_REQUEST_IS_EMPTY);
         }

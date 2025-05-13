@@ -17,6 +17,8 @@ import vn.tdsoftware.hrm_backend.repository.TimeKeepingRepository;
 import vn.tdsoftware.hrm_backend.repository.TimeSheetRepository;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.TimeKeepingService;
+import vn.tdsoftware.hrm_backend.util.PerSalaryUtil;
+import vn.tdsoftware.hrm_backend.util.PerTimeSheetUtil;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -30,9 +32,11 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
     private final EmployeeService employeeService;
     private final TimeKeepingRepository timeKeepingRepository;
     private final TimeSheetRepository timeSheetRepository;
+    private final PerTimeSheetUtil perTimeSheetUtil;
 
     @Override
     public List<EmployeeTimeKeepingResponse> getListTimeKeeping(EmployeeFilter filter) {
+        perTimeSheetUtil.checkSameDepartmentByFilter(filter);
         YearMonth yearMonth = YearMonth.from(filter.getYearMonth());
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
@@ -92,6 +96,7 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
 
     @Override
     public int getCountTimeKeeping(EmployeeFilter filter) {
+        perTimeSheetUtil.checkSameDepartmentByFilter(filter);
         return timeKeepingDAO.getCountTimeKeeping(filter);
     }
 
@@ -109,6 +114,7 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
 
     @Override
     public WorkingDayResponse getWorkingDay(WorkingDayRequest request) {
+        perTimeSheetUtil.checkWatchSameDepartmentByEmployeeId(request.getEmployeeId());
         employeeService.checkEmployeeValidator(request.getEmployeeId());
         int date = request.getWorkingDay().getDayOfWeek().getValue();
         if (date == 6 || date == 7) {

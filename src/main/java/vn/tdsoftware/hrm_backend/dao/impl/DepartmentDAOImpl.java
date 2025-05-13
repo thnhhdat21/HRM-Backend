@@ -1,9 +1,12 @@
 package vn.tdsoftware.hrm_backend.dao.impl;
 
 import org.springframework.stereotype.Component;
+import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.DepartmentDAO;
 import vn.tdsoftware.hrm_backend.dto.department.response.DepartmentTreeResponse;
 import vn.tdsoftware.hrm_backend.entity.Department;
+import vn.tdsoftware.hrm_backend.enums.ErrorCode;
+import vn.tdsoftware.hrm_backend.mapper.RowMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.department.DepartmentTreeResponseMapper;
 
 import java.util.List;
@@ -34,5 +37,20 @@ public class DepartmentDAOImpl extends AbstractDao<Department> implements Depart
                 "set isEnabled = 0 " +
                 "where id  = ? ";
         update(sqlQuery, id);
+    }
+
+    @Override
+    public Long getDepartmentByEmployeeId(long employeeId) {
+        String sql = "select contractGeneral.departmentId " +
+                "from contractGeneral " +
+                "where employeeId = ?";
+        List<Long> list = query(sql, resultSet -> {
+            try {
+                return resultSet.getLong("departmentId");
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.SQL_MAPPER_ERROR);
+            }
+        }, employeeId);
+        return list.isEmpty() ? null : list.get(0);
     }
 }

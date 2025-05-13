@@ -14,4 +14,5 @@ public interface DepartmentService {
     void deleteDepartment(Long id);
     DepartmentDetailResponse getDepartmentDetail(Long id);
     List<DepartmentResponse> getListDepartmentChild();
+    Long getDepartmentByEmployeeId(long employeeId);
 }

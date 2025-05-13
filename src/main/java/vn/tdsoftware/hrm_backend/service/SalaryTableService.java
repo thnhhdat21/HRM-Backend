@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface SalaryTableService {
     List<SalaryTableResponse> getListSalaryTable();
+    List<SalaryTableResponse> getListSalaryTableOfDepartment();
     List<SalaryDetailResponse> getListSalaryDetail(EmployeeFilter filter);
     int getCountSalaryDetail(EmployeeFilter filter);
     List<TaxResponse> getListTax(EmployeeFilter filter);

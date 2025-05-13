@@ -13,6 +13,7 @@ import vn.tdsoftware.hrm_backend.mapper.FamilyMapper;
 import vn.tdsoftware.hrm_backend.repository.EmployeeRepository;
 import vn.tdsoftware.hrm_backend.repository.FamilyRepository;
 import vn.tdsoftware.hrm_backend.service.FamilyService;
+import vn.tdsoftware.hrm_backend.util.PerEmployeeUtil;
 import vn.tdsoftware.hrm_backend.util.constant.UpdateTypeConstant;
 
 import java.util.ArrayList;
@@ -24,13 +25,15 @@ import java.util.Objects;
 public class FamilyServiceImpl implements FamilyService {
     private final FamilyRepository familyRepository;
     private final EmployeeRepository employeeRepository;
+    private final PerEmployeeUtil perEmployeeUtil;
 
     @Override
-    public List<FamilyResponse> getFamilyOfEmployee(long id) {
-        employeeRepository.findByIdAndIsEnabled(id, true).orElseThrow(
+    public List<FamilyResponse> getFamilyOfEmployee(long employeeId) {
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
+        employeeRepository.findByIdAndIsEnabled(employeeId, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY)
         );
-        List<Family> listFamilyEntity = familyRepository.findAllByEmployeeIdAndIsEnabled(id, true)
+        List<Family> listFamilyEntity = familyRepository.findAllByEmployeeIdAndIsEnabled(employeeId, true)
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new BusinessException(ErrorCode.LIST_FAMILY_IS_EMPTY)
         );
@@ -44,6 +47,7 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     @Transactional
     public void updateFamilyOfEmployee(List<FamilyRequest> requests) {
+        perEmployeeUtil.checkUpdateSameDepartmentByEmployeeId(requests.get(0).getEmployeeId());
         if (requests.isEmpty()) {
             throw new BusinessException(ErrorCode.LIST_FAMILY_REQUEST_IS_EMPTY);
         }

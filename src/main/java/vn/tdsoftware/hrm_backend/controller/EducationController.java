@@ -1,6 +1,7 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.education.request.EducationRequest;
@@ -16,6 +17,9 @@ public class EducationController {
     private final EducationService educationService;
 
     @PostMapping("/get-education-profile-employee")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
+                                    "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
+                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
     public ResponseData<List<EducationResponse>> getEducationProfile(@RequestParam("employeeId") long employeeId) {
         List<EducationResponse> response = educationService.getEducationProfile(employeeId);
         return ResponseData.<List<EducationResponse>>builder()
@@ -26,6 +30,8 @@ public class EducationController {
     }
 
     @PostMapping("/update-education-profile-employee")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
+                                    "'ROLE_MANAGE_SELF_EMPLOYEE')")
     public ResponseData<Void> updateEducationProfile(@RequestBody List<EducationRequest> requests) {
         educationService.updateEducationProfile(requests);
         return ResponseData.<Void>builder()

@@ -1,6 +1,7 @@
 package vn.tdsoftware.hrm_backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
@@ -20,6 +21,8 @@ public class TimeKeepingController {
     private final TimeKeepingService timeKeepingService;
 
     @PostMapping("/get-timekeeping-by-department")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_TIMESHEET_COMPANY'," +
+                                    "'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     public ResponseData<List<EmployeeTimeKeepingResponse>> getListTimeKeeping(@RequestBody EmployeeFilter filter) {
         List<EmployeeTimeKeepingResponse> responses = timeKeepingService.getListTimeKeeping(filter);
         return ResponseData.<List<EmployeeTimeKeepingResponse>>builder()
@@ -30,6 +33,8 @@ public class TimeKeepingController {
     }
 
     @PostMapping("/get-count-timekeeping")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_TIMESHEET_COMPANY'," +
+                                    "'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     public ResponseData<Integer> getCountTimeKeeping(@RequestBody EmployeeFilter filter) {
        int count = timeKeepingService.getCountTimeKeeping(filter);
         return ResponseData.<Integer>builder()
@@ -40,6 +45,7 @@ public class TimeKeepingController {
     }
 
     @PostMapping("/time-sheet-state")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_TIMESHEET'")
     public ResponseData<Boolean> timeSheetState(@RequestParam("yearMonth") YearMonth yearMonth) {
         Boolean response = timeKeepingService.timeSheetState(yearMonth);
         return ResponseData.<Boolean>builder()
@@ -50,6 +56,7 @@ public class TimeKeepingController {
     }
 
     @PostMapping("/closing-timekeeping")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_TIMESHEET'")
     public ResponseData<Void> closingTimeKeeping(@RequestParam("yearMonth") YearMonth yearMonth) {
         timeKeepingService.closingTimeKeeping(yearMonth);
         return ResponseData.<Void>builder()
@@ -59,6 +66,8 @@ public class TimeKeepingController {
     }
 
     @PostMapping("/get-working-day")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_TIMESHEET_COMPANY'," +
+                                    "'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     public ResponseData<WorkingDayResponse> getWorkingDay(@RequestBody WorkingDayRequest request) {
         WorkingDayResponse response = timeKeepingService.getWorkingDay(request);
         return ResponseData.<WorkingDayResponse>builder()
