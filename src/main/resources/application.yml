@@ -6,6 +6,10 @@ server:
 spring:
   application:
     name: hrm-backend
+  servlet:
+    multipart:
+      max-request-size: 50MB
+      max-file-size: 50MB
 
   datasource:
     url: jdbc:mysql://localhost:3306/hrm-database
@@ -32,6 +36,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         legacy_limit_handler: true
+        jdbc:
+          batch_size: 50
+        order_updates: true
+        order_inserts: true
 
   jackson:
     serialization.write-dates-as-timestamps: false
@@ -47,7 +55,24 @@ spring:
           auth: true
           starttls:
             enable: true
+  data:
+    redis:
+          host: localhost
+          port: 6379
 
 mail:
   from-sender: thanhdatnguyen211103@gmail.com
   company: "Công ty giải pháp phần mềm TDSoftware"
+
+minio:
+  access-key: root
+  secret-key: 12345678
+  end-point: http://127.0.0.1:9000
+
+jwt:
+  expiryHour: 8
+  expiryDay: 14
+  secretKey: WdmBVcLJ5h/sWhcCH5VT9oKF344azBdnEZDBx/BEhkiYHgj5o6mtyNlqCFLj7C+d
+  refreshKey: nJNVOYdUmcFaSWLPrfRjG2OLrN02xuX98ZZu0ckmd2Bl9ui2jy+5bKub4BiM2I/Z
+  expiration: 60000
+  refreshExpiration: 1209600000

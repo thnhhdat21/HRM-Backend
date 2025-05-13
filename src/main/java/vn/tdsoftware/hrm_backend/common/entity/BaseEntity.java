@@ -3,7 +3,6 @@ package vn.tdsoftware.hrm_backend.common.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +24,7 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     private boolean isEnabled = true;
 
     @Column(name = "createdBy")
-    private Integer createdBy;
+    private Integer createdBy = 2;
 
     @CreatedDate
     @CreationTimestamp

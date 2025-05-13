@@ -13,4 +13,5 @@ public interface DepartmentService {
     DepartmentResponse updateDepartment(DepartmentRequest departmentRequest);
     void deleteDepartment(Long id);
     DepartmentDetailResponse getDepartmentDetail(Long id);
+    List<DepartmentResponse> getListDepartmentChild();
 }

@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.mapper.response;
+package vn.tdsoftware.hrm_backend.mapper.response.employee;
 
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dto.employee.response.ResumeProfileResponse;
@@ -13,6 +13,7 @@ public class ResumeProfileMapper implements RowMapper<ResumeProfileResponse> {
         try {
             return ResumeProfileResponse.builder()
                     .id(resultSet.getLong("id"))
+                    .avatar(resultSet.getString("avatar"))
                     .fullName(resultSet.getString("fullName"))
                     .employeeCode(resultSet.getString("employeeCode"))
                     .dateOfBirth(resultSet.getDate("dateOfBirth"))

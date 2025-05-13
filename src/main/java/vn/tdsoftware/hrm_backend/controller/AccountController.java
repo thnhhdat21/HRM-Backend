@@ -65,15 +65,6 @@ public class AccountController {
                 .build();
     }
 
-    @PostMapping("/update-permission-user")
-    private ResponseData<Void> updatePermissionUser(@RequestParam("id") long id, @RequestParam("permissions") String permissions) {
-        accountService.updatePermission(id, permissions);
-        return ResponseData.<Void>builder()
-                .code(1000)
-                .message("update permission successfully")
-                .build();
-    }
-
     @PostMapping("/active-account")
     private ResponseData<Void> activeAccount(@RequestBody ActiveAccountRequest request) {
         String fullName =  accountService.activeAccount(request);

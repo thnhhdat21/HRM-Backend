@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface LeaveLetterRepository extends JpaRepository<LeaveLetter, Long> {
-    Optional<LeaveLetter>
+    Optional<LeaveLetter> findByLetterIdAndIsEnabled(long letterId, boolean isEnabled);
 
 }

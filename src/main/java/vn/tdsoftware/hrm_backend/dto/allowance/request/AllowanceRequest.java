@@ -12,4 +12,5 @@ public class AllowanceRequest {
     private String name;
     private int amount;
     private String unit;
+    private Boolean isUpdate;
 }

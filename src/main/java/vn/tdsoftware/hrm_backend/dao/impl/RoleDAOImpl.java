@@ -1,14 +1,19 @@
 package vn.tdsoftware.hrm_backend.dao.impl;
 
 import org.springframework.stereotype.Component;
+import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.RoleDAO;
 import vn.tdsoftware.hrm_backend.dto.role.response.RoleDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.role.response.RoleResponse;
 import vn.tdsoftware.hrm_backend.entity.Role;
+import vn.tdsoftware.hrm_backend.enums.ErrorCode;
+import vn.tdsoftware.hrm_backend.mapper.RowMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.role.ListPermissionByRoleMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.role.RoleDetailResponseMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.role.RoleResponseMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -51,5 +56,22 @@ public class RoleDAOImpl extends AbstractDao<Role> implements RoleDAO {
                             "where roleId = ? and isEnabled = true";
         List<String> response = query(sqlQuery, new ListPermissionByRoleMapper(), id);
         return response.get(0);
+    }
+
+    @Override
+    public List<String> getRoleByUsername(String username) {
+        String sql = "select role.code " +
+                    " from account " +
+                    " inner join contractgeneral on account.employeeId = contractGeneral.employeeId " +
+                    " inner join jobposition on contractGeneral.jobPositionId = jobPosition.id " +
+                    " inner join role on jobPosition.roleId = role.id " +
+                     "where account.username = '" + username + "'";
+        return query(sql, resultSet -> {
+            try {
+                return resultSet.getString("code");
+            } catch (Exception e) {
+               throw new BusinessException(ErrorCode.SQL_MAPPER_ERROR);
+            }
+        });
     }
 }

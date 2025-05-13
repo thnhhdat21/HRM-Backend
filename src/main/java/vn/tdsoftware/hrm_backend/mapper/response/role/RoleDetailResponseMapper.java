@@ -45,7 +45,6 @@ public class RoleDetailResponseMapper  implements RowMapper<RoleDetailResponse> 
 
                 return roleDetailResponse;
             }
-
             return null;
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SQL_MAPPER_ERROR);

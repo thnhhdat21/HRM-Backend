@@ -1,4 +1,5 @@
 package vn.tdsoftware.hrm_backend.service;
 
-public class SalaryService {
+public interface SalaryService {
+    void calculationSalary();
 }

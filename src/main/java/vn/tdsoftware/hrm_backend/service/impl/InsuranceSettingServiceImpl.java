@@ -31,17 +31,10 @@ public class InsuranceSettingServiceImpl implements InsuranceSettingService {
                 () -> new BusinessException(ErrorCode.INSURANCE_SETTING_ERROR)
         );
         if (settingRequest.getHasUpdate() != null && settingRequest.getHasUpdate()) {
-            insuranceSettingEntity.setClosingDateIncrease(settingRequest.getClosingDateIncrease());
             insuranceSettingEntity.setSingedContract(settingRequest.getSingedContract());
-            insuranceSettingEntity.setReturnedFromMaternity(settingRequest.getReturnedFromMaternity());
-            insuranceSettingEntity.setReturnedFromUnpaidLeave(settingRequest.getReturnedFromUnpaidLeave());
-            insuranceSettingEntity.setIncreasedContribution(settingRequest.getIncreasedContribution());
-            insuranceSettingEntity.setClosingDateDecrease(settingRequest.getClosingDateDecrease());
-            insuranceSettingEntity.setContractTerminated(settingRequest.getContractTerminated());
-            insuranceSettingEntity.setMaternityLeave(settingRequest.getMaternityLeave());
-            insuranceSettingEntity.setDecreasedContribution(settingRequest.getDecreasedContribution());
+            insuranceSettingEntity.setReturnedLeaveTmp(settingRequest.getReturnedLeaveTmp());
+            insuranceSettingEntity.setLeaveTmp(settingRequest.getLeaveTmp());
             insuranceSettingEntity.setUnpaidLeave(settingRequest.getUnpaidLeave());
-            insuranceSettingEntity.setMaxUnpaidLeaveDay(settingRequest.getMaxUnpaidLeaveDay());
             insuranceSettingRepository.save(insuranceSettingEntity);
         }
         return InsuranceSettingMapper.maptoInsuranceSettingResponse(insuranceSettingEntity);

@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.dto.lette.request.leave;
+package vn.tdsoftware.hrm_backend.dto.letter.request.leave;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -12,11 +12,9 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class LeaveLetterRequest {
-    private long employeeId;
     private long letterId;
-    private String code;
+    private long employeeId;
     private long letterReasonId;
-    private LocalDate date;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateStart;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

@@ -15,6 +15,6 @@ public class DepartmentDetailResponse {
     private String name;
     private String code;
     private Integer businessBlockId;
-    private String departmentLevel;
+    private Integer departmentLevel;
     private Long parentId;
 }

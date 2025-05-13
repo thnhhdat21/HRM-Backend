@@ -8,11 +8,6 @@ public class LeaveSettingMapper {
         return LeaveSettingResponse.builder()
                 .id(leaveSetting.getId())
                 .annualLeaveDays(leaveSetting.getAnnualLeaveDays())
-                .leaveCycleStart(leaveSetting.getLeaveCycleStart())
-                .leaveCycleEnd(leaveSetting.getLeaveCycleEnd())
-                .leaveCycleUnit(leaveSetting.getLeaveCycleUnit())
-                .accrualMethod(leaveSetting.getAccrualMethod())
-                .receiveNewLeaveDate(leaveSetting.getReceiveNewLeaveDate())
                 .seniorLeaveEnabled(leaveSetting.getSeniorLeaveEnabled())
                 .seniorYears(leaveSetting.getSeniorYears())
                 .build();

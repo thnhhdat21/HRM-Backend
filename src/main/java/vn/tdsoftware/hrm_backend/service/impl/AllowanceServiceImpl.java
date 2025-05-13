@@ -72,6 +72,15 @@ public class AllowanceServiceImpl implements AllowanceService {
         allowanceRepository.save(allowanceEntity);
     }
 
+    @Override
+    public List<AllowanceResponse> getAllowanceByContractType(long contractTypeId) {
+        List<AllowanceResponse> responseList = allowanceDAO.getAllowanceByContractType(contractTypeId);
+        if (responseList.isEmpty()) {
+            throw new BusinessException(ErrorCode.LIST_ALLOWANCE_IS_EMPTY);
+        }
+        return responseList;
+    }
+
 
     private void validator(AllowanceRequest request) {
         if (request.getName() == null || request.getName().isEmpty()) {

@@ -10,6 +10,8 @@ import vn.tdsoftware.hrm_backend.dto.contracttype.request.ContractTypeRequest;
 import vn.tdsoftware.hrm_backend.dto.contracttype.request.ContractTypeUpdate;
 import vn.tdsoftware.hrm_backend.dto.contracttype.response.ContractTypeDetail;
 import vn.tdsoftware.hrm_backend.dto.contracttype.response.ContractTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.entity.Allowance;
 import vn.tdsoftware.hrm_backend.entity.ContractType;
 import vn.tdsoftware.hrm_backend.entity.ContractTypeHasAllowance;
@@ -111,6 +113,24 @@ public class ContractTypeServiceImpl implements ContractTypeService {
             }
         }
         return ContractTypeMapper.mapToTypeContractResponse(contractTypeEntity);
+    }
+
+    @Override
+    public List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter) {
+        List<CountContractTypeResponse> responses = contractTypeDAO.getCountContractType(filter);
+        if (responses.isEmpty()) {
+            throw new BusinessException(ErrorCode.LIST_TYPE_CONTRACT_IS_EMPTY);
+        }
+        return responses;
+    }
+
+    @Override
+    public void deleteContractType(long id) {
+        ContractType contractType = contractTypeRepository.findByIdAndIsEnabled(id, true).orElseThrow(
+                () -> new BusinessException(ErrorCode.TYPE_CONTRACT_IS_EMPTY)
+        );
+        contractType.setEnabled(false);
+        contractTypeRepository.save(contractType);
     }
 
     private void checkValidator (ContractTypeRequest request) {

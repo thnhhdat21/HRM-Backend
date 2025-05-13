@@ -67,5 +67,12 @@ public class DepartmentController {
                 .build();
     }
 
-
+    @PostMapping("/get-list-department-child")
+    public ResponseData<List<DepartmentResponse>> getListDepartmentChild(){
+        List<DepartmentResponse> response = departmentService.getListDepartmentChild();
+        return ResponseData.<List<DepartmentResponse>>builder()
+                .code(1000)
+                .data(response)
+                .build();
+    }
 }

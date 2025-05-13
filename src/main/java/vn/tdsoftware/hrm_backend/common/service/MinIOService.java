@@ -1,10 +1,10 @@
-package vn.tdsoftware.hrm_backend.service;
+package vn.tdsoftware.hrm_backend.common.service;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 
 public interface MinIOService {
     void uploadFile(String fileName, MultipartFile file);
-    InputStream getFile(String pathFile);
+    InputStreamResource getFile(String pathFile);
 }

@@ -5,5 +5,6 @@ import vn.tdsoftware.hrm_backend.dto.history.contract.response.ContractHistoryRe
 import java.util.List;
 
 public interface ContractHistoryService {
-    List<ContractHistoryResponse> getContractHistory(String contractCode);
+    List<ContractHistoryResponse> getContractHistory(long contractId);
+    void createContractHistory(long contractId, int state, String title);
 }

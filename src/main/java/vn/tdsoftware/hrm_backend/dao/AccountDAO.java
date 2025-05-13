@@ -12,5 +12,5 @@ public interface AccountDAO {
     List<AccountResponse> getListAccount(int type);
     AccountCountResponse getAccountCount();
     void deleteAccount(long id);
-    AccountDetailResponse getAccountDetail(long id, int type);
+    AccountDetailResponse getAccountDetail(long id);
 }

@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.dto.decision.transferandappoint.request;
+package vn.tdsoftware.hrm_backend.dto.decision.transferandappoint.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +19,6 @@ public class TransferAndAppointDecisionResponse {
     private long jobPositionNewId;
     private long departmentOldId;
     private long jobPositionOldId;
+    private int state;
     private int type;
 }

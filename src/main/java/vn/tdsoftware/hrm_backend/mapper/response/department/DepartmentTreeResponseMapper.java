@@ -15,7 +15,7 @@ public class DepartmentTreeResponseMapper implements RowMapper<DepartmentTreeRes
                     .id(resultSet.getLong("id"))
                     .name(resultSet.getString("name"))
                     .departmentLevel(resultSet.getString("departmentLevel"))
-                    .businessBlock(resultSet.getString("businessBlockName"))
+                    .businessBlock(resultSet.getString("businessBlock"))
                     .parentId(resultSet.getLong("parentId"))
                     .build();
         } catch (Exception e) {

@@ -20,6 +20,7 @@ import vn.tdsoftware.hrm_backend.util.FieldStringUtil;
 import vn.tdsoftware.hrm_backend.util.constant.PermissionConstant;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static vn.tdsoftware.hrm_backend.util.ConvertUtil.permissionValidator;
@@ -63,6 +64,8 @@ public class RoleServiceImpl implements RoleService {
                 .name(roleRequest.getName())
                 .code(roleRequest.getCode())
                 .description(roleRequest.getDesc())
+                .accountAdmin(Objects.equals(roleRequest.getPermissions(), PermissionConstant.ADMIN))
+                .accountDefault(Objects.equals(roleRequest.getPermissions(), PermissionConstant.DEFAULT))
                 .build());
         for (Integer permission : listPermission) {
             roleHasPermissionRepository.save(RoleHasPermission.builder()

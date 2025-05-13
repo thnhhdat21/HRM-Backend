@@ -19,10 +19,8 @@ public class LetterReasonDetail {
     private Integer maximum;
     private String unit;
     private Boolean workDayEnabled;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Ho_Chi_Minh")
     private LocalTime goLate;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Ho_Chi_Minh")
     private LocalTime backEarly;
     private Integer type;

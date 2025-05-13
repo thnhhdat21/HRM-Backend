@@ -12,6 +12,7 @@ import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.mapper.RewardAndPenaltyMapper;
 import vn.tdsoftware.hrm_backend.repository.RewardAndPenaltyRepository;
 import vn.tdsoftware.hrm_backend.service.RewardAndPenaltyService;
+import vn.tdsoftware.hrm_backend.util.constant.DecisionConstant;
 import vn.tdsoftware.hrm_backend.util.constant.StatusContract;
 
 import java.util.ArrayList;
@@ -25,9 +26,6 @@ public class RewardAndPenaltyServiceImpl implements RewardAndPenaltyService {
 
     @Override
     public List<RewardAndPenaltyResponse> getList(int type) {
-        if (type < 1 || type > 2) {
-            throw new BusinessException(ErrorCode.TYPE_INVALID);
-        }
         List<RewardAndPenaltyResponse> list = rewardAndPenaltyDAO.getList(type);
         if (list == null || list.isEmpty()) {
             throw new BusinessException(ErrorCode.LIST_REWARD_OR_PENALTY_IS_EMPTY);
@@ -79,8 +77,6 @@ public class RewardAndPenaltyServiceImpl implements RewardAndPenaltyService {
             throw new BusinessException(ErrorCode.NAME_INVALID);
         } else if (request.getAmount() <= 0){
             throw new BusinessException(ErrorCode.AMOUNT_INVALID);
-        } else if (request.getType() != null && ( request.getType() < 1 || request.getType() > 2 )) {
-            throw new BusinessException(ErrorCode.TYPE_INVALID);
         }
     }
 }

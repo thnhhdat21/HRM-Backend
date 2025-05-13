@@ -1,10 +1,21 @@
 package vn.tdsoftware.hrm_backend.dao;
 
 import org.springframework.stereotype.Repository;
-import vn.tdsoftware.hrm_backend.dto.work.response.ContractResponse;
-import vn.tdsoftware.hrm_backend.dto.work.response.WorkResponse;
+import vn.tdsoftware.hrm_backend.dto.contract.response.*;
+import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface ContractDAO {
-    ContractResponse getWorkProfile(long employeeId);
+    WorkProfileResponse getWorkProfile(long employeeId);
+    List<WorkProcessResponse> getWorkProcess (long employeeId);
+    ContractProfileResponse getContractProfileByEmployee(long employeeId);
+    ContractProfileResponse getContractProfileByContractId(long contractId);
+    ContractDetailResponse getContractDetail(long contractId);
+    List<ContractOfEmployeeResponse> getListContractOfEmployee(long employeeId);
+    List<ContractResponse> getListContract(EmployeeFilter filter);
+    int countContractAppendix(long contractId);
+
 }

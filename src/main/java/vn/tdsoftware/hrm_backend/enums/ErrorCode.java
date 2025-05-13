@@ -6,7 +6,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    MINIO_GET_FILE_ERROR(997, "Lỗi get file"),
+    MINIO_UPLOAD_ERROR(998, "Lỗi upload file"),
+
     SQL_MAPPER_ERROR(999, "Lỗi mapper"),
+
     NAME_AND_CODE_IS_NULL(1001, "Không để trống tên hoặc mã"),
     ROLE_NOT_EXISTED(1002, "Không tồn tại quyền này"),
     LIST_BUSINESS_BLOCK_IS_EMPTY(1003, "Không tồn tại khối nghiệp vụ nào"),
@@ -19,7 +23,8 @@ public enum ErrorCode {
     TYPE_ACCOUNT_NOT_EXIST(1009, "Trạng thái tài khoản không phù hợp"),
     ID_NOT_EXIST(1010, "Id không hợp lệ"),
     ACCOUNT_UNLOCKED(1011, "Tài khoản đã được mở khóa trước đó"),
-    ACCOUNT_LOCKED(1012, "Tài khoản này đã bị khóa trước đó"),
+    ACCOUNT_NOT_ACTIVE(1111, "Tài khoản chưa được kích hoạt"),
+    ACCOUNT_LOCKED(1012, "Tài khoản đã bị khóa"),
     PASSWORD_INVALID(1013, "Mật khẩu không hợp lệ"),
     EMPLOYEE_IS_EMPTY(1014, "Không tồn tại nhân viên này"),
     USERNAME_OR_PASSWORD_IS_EXIST(1015, "Tên tài khoản hoặc mật khẩu không hợp lệ"),
@@ -77,8 +82,8 @@ public enum ErrorCode {
     TIME_BREAK_INVALID(1056, "Thời gian nghỉ không hợp lý"),
     WORK_SHIFT_IS_EMPTY(1057, "Ca làm việc không tồn tại"),
 
-    LIST_APPROVAL_REASON_IS_EMPTY(1058, "Chưa có danh sách lý do"),
-    LIST_APPROVAL_REASON_REQUEST_IS_EMPTY(1059, "Không có yêu cầu tạo mới nào"),
+    LIST_LETTER_REASON_IS_EMPTY(1058, "Chưa có danh sách lý do"),
+    LIST_LETTER_REASON_REQUEST_IS_EMPTY(1059, "Không có yêu cầu tạo mới nào"),
     REASON_INVALID(1060, "Yêu cầu nhập lý do"),
     SYMBOL_INVALID(1061, "Ký hiệu không hợp lệ"),
     MAXIMUM_INVALID(1062, "Số ngày tối đa không hợp lệ"),
@@ -86,6 +91,69 @@ public enum ErrorCode {
     GO_LATE_INVALID(1064, "Thời gian đi muộn không hợp lệ"),
     BACK_EARLY_INVALID(1065, "Thời gian về sớm không hợp lệ"),
     REASON_IS_EMPTY(1066, "Không có lý do hợp lệ"),
+
+    LIST_EMPLOYEE_IS_EMPTY(1067, "Không tìm thấy danh sách nhân sự"),
+
+    LIST_FAMILY_IS_EMPTY(1068, "Chưa có thông tin gia đình"),
+    WORK_IS_EMPTY(1069, "Chưa có thông tin công việc"),
+    ON_LEAVE_IS_EMPTY(1070, "Chưa có thông tin ngày nghỉ"),
+    CONTRACT_HISTORY_IS_EMPTY(1071, "Chưa có thông tin quá trình nhân sự"),
+    DOC_RECEIVE_IS_EMPTY(1072, "Chưa có thông tin tiếp nhận"),
+    NATION_IS_EMPTY(1073, "Chưa nhập thông tin quốc gia"),
+    PHONE_NUMBER_IS_EMPTY(1074, "Chưa nhập thông tin số điện thoại"),
+    EMAIL_IS_EMPTY(1075, "Chưa nhập thông tin email"),
+    CCCD_IS_EMPTY(1076, "Chưa nhập thông tin CMT/Căn cước/Hộ chiếu"),
+    ISSUE_DATE_CCCD_IS_EMPTY(1077, "Chưa nhập thông tin ngày cấp CMT/Căn cước/Hộ chiếu"),
+    PLACE_CCCD_IS_EMPTY(1078, "Chưa nhập thông tin nơi cấp CMT/Căn cước/Hộ chiếu"),
+    TAX_CODE_IS_EMPTY(1079, "Chưa nhập thông tin Mã số thuế"),
+    HOMETOWN_INVALID(1080, "Thông tin nguyên quán không chính xác"),
+    PERMANENT_ADDRESS_INVALID(1081, "Thông tin thường trú không chính xác"),
+    CURRENT_ADDRESS_INVALID(1082, "Thông tin chỗ ở hiện tại không chính xác"),
+    RELATIONSHIP_ISEMPTY(1083, "Thông tin mối quan hệ không chính xác"),
+    DATE_OF_BIRTH_IS_EMPTY(1084, "Thông tin ngày sinh không chính xác"),
+    LIST_FAMILY_REQUEST_IS_EMPTY(1085, "Danh sách yêu cầu cập nhật thông tin gia đình không chính xác"),
+    FAMILY_IS_EMPTY(1086, "Thông tin gia đình không chính xác"),
+
+    LIST_EDUCATION_REQUEST_IS_EMPTY(1087, "Danh sách yêu cầu cập nhật thông tin học vấn không chính xác"),
+    TO_MONTH_IS_EMPTY(1087, "Thông tin tháng bắt đầu không chính xác"),
+    FROM_MONTH_IS_EMPTY(1088, "Thông tin tháng kết thúc không chính xác"),
+    EDUCATION_LEVEL_INVALID(1089, "Thông tin trình độ đại học không chính xác"),
+    PLACE_TRAINING_IS_EMPTY(1090, "Thông tin nơi đào tạo không chính xác"),
+    MAJOR_IS_EMPTY(1091, "thông tin chuyên ngành không chính xác"),
+    METHOD_TRAINING_IS_EMPTY(1092, "Thông tin hình thức đào tạo không chính xác"),
+    EDUCATION_IS_EMPTY(1093, "Thông tin học vấn không chính xác"),
+    TIME_ON_LEAVE_INVALID(1094, "Thời gian nghỉ phép không hợp lý"),
+    CONTRACT_IN_VALID(1095, "Không tồn tại hợp đồng này"),
+    DATE_START_IN_VALID(1096, "Ngày bắt đầu không hợp lệ"),
+    DATE_SIGN_IN_VALID(1097, "Ngày ký không hợp lệ"),
+    CODE_IN_VALID(1098, "Mã số không hợp lệ"),
+    DATE_IN_VALID(1099, "Ngày không hợp lệ"),
+    LIST_EDUCATION_IS_EMPTY(1100, "Chưa có thông tin học vấn"),
+    CONTRACT_IS_EMPTY(1111, "Chưa có hợp đồng lao động"),
+    SALARY_HAS_ALLOWANCE_IS_EMPTY(1112, "Quyết định tăng lương không có phụ cấp này"),
+    DECISION_IS_EMPTY(1113, "Chưa có quyết định"),
+    DATE_END_IN_VALID(1114, "Ngày kêt thúc không hợp lệ"),
+    TOTAL_IN_VALID(1115, "Tổng không hợp lệ"),
+    LETTER_IS_EMPTY(1116, "Không có đơn từ"),
+    TIMEKEEPING_IS_EMPTY(1117, "Chưa có thông tin chấm công"),
+
+    LIST_DEPARTMENT_REQUEST_IS_EMPTY(1118, "Danh sách yêu cầu của phòng ban không chính xác"),
+    WORKING_DAY_IS_EMPTY(1119, "Không có thông tin ngày công"),
+    WORKING_DAY_LEAVE(1120, "Ngày nghỉ"),
+    HOLIDAY_IS_EMPTY(1121, "Không có ngày nghỉ lễ"),
+
+    SALARY_TABLE_IS_EMPTY(1122, "Không có bảng lương"),
+    SALARY_DETAIL_IS_EMPTY(1122, "Không có phiếu lương"),
+    TAX_TABLE_IS_EMPTY(1123, "Không có bảng thuế"),
+    NOT_CREATE_CONTRACT_NEW(1124, "Ngày bắt đầu hợp đồng mới phải sau khi hợp đồng hiện tại hết hiệu lực!"),
+    INSURANCE_IS_EMPTY(1125, "Không có thông tin bảo hiểm"),
+    TOKEN_IS_EMPTY(1126, "Token không tồn tại"),
+    TOKEN_IN_VALID(1127, "Token không hợp lệ"),
+    ACCESS_TOKEN_IN_BLACKLIST(1128, "Access token trong blacklist"),
+    REFRESH_TOKEN_IN_BLACKLIST(1129, "Refesh token trong blacklist"),
+    REFRESH_TOKEN_IN_VALID(1130, "Refesh token không hợp lệ"),
+
+
     ;
 
     private final int code;

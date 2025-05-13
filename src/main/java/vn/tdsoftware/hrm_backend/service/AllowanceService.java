@@ -10,4 +10,5 @@ public interface AllowanceService {
     List<AllowanceResponse> createAllowance(List<AllowanceRequest> allowanceRequest);
     AllowanceResponse updateAllowance(AllowanceRequest allowanceRequest);
     void deleteAllowance(long id);
+    List<AllowanceResponse> getAllowanceByContractType(long contractTypeId);
 }

@@ -10,9 +10,9 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AllowanceResponse {
-    private long id;
+    private Long id;
     private String name;
-    private int amount;
+    private Integer amount;
     private String unit;
     private String status;
 }

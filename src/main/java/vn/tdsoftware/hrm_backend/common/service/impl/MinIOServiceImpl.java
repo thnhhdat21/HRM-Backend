@@ -1,12 +1,13 @@
-package vn.tdsoftware.hrm_backend.service.impl;
+package vn.tdsoftware.hrm_backend.common.service.impl;
 
 import io.minio.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
-import vn.tdsoftware.hrm_backend.service.MinIOService;
+import vn.tdsoftware.hrm_backend.common.service.MinIOService;
 import vn.tdsoftware.hrm_backend.util.constant.MinIOConstant;
 
 import java.io.InputStream;
@@ -38,18 +39,20 @@ public class MinIOServiceImpl implements MinIOService {
     }
 
     @Override
-    public InputStream getFile(String pathFile) {
+    public InputStreamResource getFile(String pathFile) {
         try {
             boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(MinIOConstant.BUCKET_NAME).build());
             if (!bucketExists) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(MinIOConstant.BUCKET_NAME).build());
             }
-
-            return minioClient
+            InputStream inputStream = minioClient
                     .getObject(GetObjectArgs.builder().bucket(MinIOConstant.BUCKET_NAME).object(pathFile).build());
+            if (Objects.isNull(inputStream)) {
+                throw new BusinessException(ErrorCode.MINIO_GET_FILE_ERROR);
+            }
+            return new InputStreamResource(inputStream);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.MINIO_GET_FILE_ERROR);
-
         }
     }
 }

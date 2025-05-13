@@ -8,6 +8,8 @@ import vn.tdsoftware.hrm_backend.dto.contracttype.request.ContractTypeRequest;
 import vn.tdsoftware.hrm_backend.dto.contracttype.request.ContractTypeUpdate;
 import vn.tdsoftware.hrm_backend.dto.contracttype.response.ContractTypeDetail;
 import vn.tdsoftware.hrm_backend.dto.contracttype.response.ContractTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.service.ContractTypeService;
 
 import java.util.List;
@@ -31,7 +33,6 @@ public class ContractTypeController {
 
     @PostMapping("/create-contract-type")
     public ResponseData<ContractTypeResponse> getList(@RequestBody ContractTypeRequest request) {
-        System.out.println(gson.toJson(request));
         ContractTypeResponse response = contractTypeService.createContractType(request);
         return ResponseData.<ContractTypeResponse>builder()
                 .code(1000)
@@ -56,6 +57,25 @@ public class ContractTypeController {
         return ResponseData.<ContractTypeResponse>builder()
                 .code(1000)
                 .data(response)
+                .message("Get contract type successfully")
+                .build();
+    }
+
+    @PostMapping("/get-count-contract-type")
+    public ResponseData<List<CountContractTypeResponse>> getCountContractType(@RequestBody EmployeeFilter filter) {
+        List<CountContractTypeResponse> response = contractTypeService.getCountContractType(filter);
+        return ResponseData.<List<CountContractTypeResponse>>builder()
+                .code(1000)
+                .data(response)
+                .message("Get contract type successfully")
+                .build();
+    }
+
+    @PostMapping("/delete-contract-type")
+    public ResponseData<Void> delete(@RequestParam long id) {
+        contractTypeService.deleteContractType(id);
+        return ResponseData.<Void>builder()
+                .code(1000)
                 .message("Get contract type successfully")
                 .build();
     }

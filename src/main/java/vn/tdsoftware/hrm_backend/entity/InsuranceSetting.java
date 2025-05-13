@@ -16,37 +16,15 @@ import java.io.Serializable;
 @Entity
 @Table(name = "InsuranceSetting")
 public class InsuranceSetting extends BaseEntity<Integer> implements Serializable {
-
-    @Column(name = "closingDateIncrease")
-    private Integer closingDateIncrease;
-
     @Column(name = "singedContract")
     private Boolean singedContract;
 
-    @Column(name = "returnedFromMaternity")
-    private Boolean returnedFromMaternity;
+    @Column(name = "returnedLeaveTmp")
+    private Boolean returnedLeaveTmp;
 
-    @Column(name = "returnedFromUnpaidLeave")
-    private Boolean returnedFromUnpaidLeave;
-
-    @Column(name = "increasedContribution")
-    private Boolean increasedContribution;
-
-    @Column(name = "closingDateDecrease")
-    private Integer closingDateDecrease;
-
-    @Column(name = "contractTerminated")
-    private Boolean contractTerminated;
-
-    @Column(name = "maternityLeave")
-    private Boolean maternityLeave;
-
-    @Column(name = "decreasedContribution")
-    private Boolean decreasedContribution;
+    @Column(name = "leaveTmp")
+    private Boolean leaveTmp;
 
     @Column(name = "unpaidLeave")
     private Boolean unpaidLeave;
-
-    @Column(name = "maxUnpaidLeaveDay")
-    private Integer maxUnpaidLeaveDay;
 }

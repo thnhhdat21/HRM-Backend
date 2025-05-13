@@ -21,7 +21,6 @@ public class ManageEmployeeController {
 
     @PostMapping("/get-list-employee")
     public ResponseData<List<EmployeeOfDepartment>> getListEmployeeFilter(@RequestBody EmployeeFilter request) {
-        System.out.println(employeeService.getCountEmployeeFilter(request));
         List<EmployeeOfDepartment> responses= employeeService.getListEmployeeFilter(request);
         return ResponseData.<List<EmployeeOfDepartment>>builder()
                 .code(1000)
@@ -39,7 +38,4 @@ public class ManageEmployeeController {
                 .message("Get List employee successfully")
                 .build();
     }
-
-
-
 }

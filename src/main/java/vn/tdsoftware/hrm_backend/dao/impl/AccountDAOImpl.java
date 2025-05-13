@@ -44,14 +44,10 @@ public class AccountDAOImpl extends AbstractDao<Account> implements AccountDAO {
     }
 
     @Override
-    public AccountDetailResponse getAccountDetail(long id, int type) {
+    public AccountDetailResponse getAccountDetail(long id) {
         String sqlQueryWithRole = "call proc_GetAccountWithRole(?) ";
-        String sqlQueryWithNoRole = "call proc_GetAccountWithNoRole(?)";
         List<AccountDetailResponse> responseList;
-        if (type == AccountConstant.ACCOUNT_ROLE)
-            responseList = query(sqlQueryWithRole, new AccountDetailMapper(), id);
-        else
-            responseList = query(sqlQueryWithNoRole, new AccountDetailMapper(), id);
+        responseList = query(sqlQueryWithRole, new AccountDetailMapper(), id);
         return responseList.get(0);
     }
 }

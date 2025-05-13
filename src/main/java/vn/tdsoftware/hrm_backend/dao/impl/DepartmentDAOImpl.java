@@ -21,9 +21,10 @@ public class DepartmentDAOImpl extends AbstractDao<Department> implements Depart
     @Override
     public int countEmployeeInDepartment(Long id) {
         String sqlQuery = " select count(employee.id) as countEmployee " +
-                "from department " +
-                "inner join employee on department.id = employee.departmentId " +
-                "where department.id = ?";
+                "from contract " +
+                "inner join employee on contract.employeeId = employee.id and contract.isActive = true " +
+                "inner join department on contract.departmentId = department.id " +
+                "where department.id = ? ";
         return count(sqlQuery, id);
     }
 

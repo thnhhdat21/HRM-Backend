@@ -61,4 +61,7 @@ public class ContractGeneral extends BaseEntity<Long> implements Serializable {
 
     @Column(name = "state")
     private Integer state;
+
+    @Column(name = "contractOriginal")
+    private Long contractOriginal;
 }

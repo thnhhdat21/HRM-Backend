@@ -26,7 +26,7 @@ public class Department extends BaseEntity<Long> implements Serializable {
     private Integer businessBlockId;
 
     @Column(name = "departmentLevel")
-    private String departmentLevel;
+    private Integer departmentLevel;
 
     @Column(name = "parentId")
     private Long parentId;

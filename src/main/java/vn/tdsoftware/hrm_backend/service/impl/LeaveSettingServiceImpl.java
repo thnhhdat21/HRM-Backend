@@ -30,11 +30,6 @@ public class LeaveSettingServiceImpl implements LeaveSettingService {
                 () -> new BusinessException(ErrorCode.LEAVE_SETTING_IS_EMPTY)
         );
         leaveSettingEntity.setAnnualLeaveDays(leaveSettingRequest.getAnnualLeaveDays());
-        leaveSettingEntity.setLeaveCycleStart(leaveSettingRequest.getLeaveCycleStart());
-        leaveSettingEntity.setLeaveCycleEnd(leaveSettingRequest.getLeaveCycleEnd());
-        leaveSettingEntity.setLeaveCycleUnit(leaveSettingRequest.getLeaveCycleUnit());
-        leaveSettingEntity.setAccrualMethod(leaveSettingRequest.getAccrualMethod());
-        leaveSettingEntity.setReceiveNewLeaveDate(leaveSettingRequest.getReceiveNewLeaveDate());
         leaveSettingEntity.setSeniorLeaveEnabled(leaveSettingRequest.isSeniorLeaveEnabled());
         leaveSettingEntity.setSeniorYears(leaveSettingRequest.getSeniorYears());
 

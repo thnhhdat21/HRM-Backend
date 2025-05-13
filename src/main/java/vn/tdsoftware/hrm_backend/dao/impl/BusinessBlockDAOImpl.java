@@ -23,8 +23,10 @@ public class BusinessBlockDAOImpl extends AbstractDao<BusinessBlock> implements 
     @Override
     public int countEmployeeOfBlock(int id) {
         String sqlQuery = "select count(employee.id) as countEmployee " +
-                "from businessBlock inner join department on businessBlock.id = department.businessBlockId " +
-                "inner join employee on department.id = employee.departmentId " +
+                "from contract " +
+                "inner join employee on contract.employeeId = employee.id and contract.isActive = true " +
+                "inner join department on contract.departmentId = department.id " +
+                "inner join businessBlock on department.businessBlockId = businessBlock.id " +
                 "where businessBlock.id = ? ";
         return count(sqlQuery, id);
     }

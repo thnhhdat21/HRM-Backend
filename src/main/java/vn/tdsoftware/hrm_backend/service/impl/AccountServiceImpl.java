@@ -7,36 +7,29 @@ import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.common.service.EmailService;
 import vn.tdsoftware.hrm_backend.common.thread.SendMailThread;
 import vn.tdsoftware.hrm_backend.dao.AccountDAO;
-import vn.tdsoftware.hrm_backend.dao.AccountHasPermissionDAO;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountCountResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
 import vn.tdsoftware.hrm_backend.entity.*;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
-import vn.tdsoftware.hrm_backend.repository.AccountHasPermissionRepository;
 import vn.tdsoftware.hrm_backend.repository.AccountRepository;
 import vn.tdsoftware.hrm_backend.repository.EmployeeRepository;
-import vn.tdsoftware.hrm_backend.repository.RoleRepository;
 import vn.tdsoftware.hrm_backend.service.AccountService;
+import vn.tdsoftware.hrm_backend.util.AccountUtil;
 import vn.tdsoftware.hrm_backend.util.FieldStringUtil;
 import vn.tdsoftware.hrm_backend.util.constant.AccountConstant;
 
 import java.util.Date;
 import java.util.List;
 
-import static vn.tdsoftware.hrm_backend.util.ConvertUtil.permissionValidator;
-
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountDAO accountDAO;
     private final AccountRepository accountRepository;
-    private final AccountHasPermissionRepository accountHasPermissionRepository;
-    private final AccountHasPermissionDAO accountHasPermissionDAO;
     private final EmployeeRepository employeeRepository;
     private final EmailService emailService;
-    private final RoleRepository roleRepository;
 
     @Override
     public List<AccountResponse> getListAccount(int type) {
@@ -85,19 +78,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    @Override
-    @Transactional
-    public void updatePermission(long id, String permissions) {
-        Account account = checkAccount(id);
-        List<Integer> listPermission = permissionValidator(permissions);
-        accountHasPermissionDAO.deleteAccountHasPermission(account.getId());
-        for (Integer permission : listPermission) {
-            accountHasPermissionRepository.save(AccountHasPermission.builder()
-                            .accountId(account.getId())
-                            .permissionId(permission)
-                    .build());
-        }
-    }
 
     @Override
     @Transactional
@@ -129,16 +109,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDetailResponse getDetailAccount(long id) {
-        int type = AccountConstant.ACCOUNT_ROLE;
-        Account account = checkAccount(id);
-        if (accountHasPermissionRepository.existsByAccountIdAndIsEnabled(account.getId(), true)) {
-            type = AccountConstant.ACCOUNT_ROLE_CUSTOM;
-        }
-        AccountDetailResponse response = accountDAO.getAccountDetail(id, type);
+        checkAccount(id);
+        AccountDetailResponse response = accountDAO.getAccountDetail(id);
         if (response == null) {
             throw new BusinessException(ErrorCode.ACCOUNT_NOT_EXIST);
         }
         return response;
+    }
+
+    @Override
+    public void createAccount(long employeeId, String employeeName) {
+        accountRepository.save(Account.builder()
+                        .employeeId(employeeId)
+                        .username(AccountUtil.generateUsername(employeeName, employeeId))
+                        .status(AccountConstant.ACCOUNT_NOT_ACTIVE)
+                .build());
     }
 
     private Employee checkEmployee(String employeeCode) {

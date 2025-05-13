@@ -17,17 +17,23 @@ public class ContractProfileMapper implements RowMapper<ContractProfileResponse>
         try {
             if (resultSet.next()) {
                 ContractProfileResponse contractDetailResponse = ContractProfileResponse.builder()
+                        .contractId(resultSet.getLong("contractId"))
+                        .parent(resultSet.getLong("parent"))
                         .contractCode(resultSet.getString("contractCode"))
                         .employeeName(resultSet.getString("employeeName"))
+                        .employeeCode(resultSet.getString("employeeCode"))
                         .contractType(resultSet.getString("contractType"))
+                        .state(resultSet.getInt("contractState"))
                         .department(resultSet.getString("department"))
                         .jobPosition(resultSet.getString("jobPosition"))
                         .duty(resultSet.getString("duty"))
                         .method(resultSet.getString("method"))
                         .dateSign(resultSet.getDate("dateSign"))
                         .dateStart(resultSet.getDate("dateStart"))
+                        .dateEnd(resultSet.getDate("dateEnd"))
                         .contractStatus(resultSet.getInt("contractStatus"))
                         .salaryGross(resultSet.getInt("salaryGross"))
+                        .description(resultSet.getString("description"))
                         .build();
                 List<AllowanceResponse> allowances = new ArrayList<>();
                 do {

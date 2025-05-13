@@ -1,5 +1,6 @@
 package vn.tdsoftware.hrm_backend.common.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -71,13 +72,13 @@ public class GlobalExceptionHandler {
 //            log.info("Invalid UserName");
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 //                    .body(response);
-//        } else if (exception instanceof BadCredentialsException) {
-//            response.setMessage("Invalid password");
-//            response.setCode(ResponseCode.BAD_CREDENTIALS.getCode());
-//            response.setError(ResponseCode.BAD_CREDENTIALS.getMessage());
-//            log.info("Invalid password");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(response);
+        } else if (exception instanceof ExpiredJwtException) {
+            response.setMessage("Token hết hạn");
+            response.setCode(ResponseCode.TOKEN_EXPIRATION.getCode());
+            response.setError(ResponseCode.TOKEN_EXPIRATION.getMessage());
+            log.info("Token hết hạn");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(response);
         }else {
             response.setMessage(exception.getMessage());
             response.setCode(ResponseCode.GENERAL_EXCEPTION.getCode());

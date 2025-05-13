@@ -24,4 +24,7 @@ public class Duty extends BaseEntity<Long> implements Serializable {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "isAutoCheckin")
+    private Boolean isAutoCheckin;
 }

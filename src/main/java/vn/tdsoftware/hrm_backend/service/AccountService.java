@@ -13,8 +13,8 @@ public interface AccountService {
     void lockAccount(long id);
     void unlockAccount(long id);
     void changePassword(long id, String password) ;
-    void updatePermission(long id, String permissions) ;
     String activeAccount(ActiveAccountRequest request);
     void deleteId(long id);
     AccountDetailResponse  getDetailAccount(long id);
+    void createAccount(long employeeId, String employeeName);
 }

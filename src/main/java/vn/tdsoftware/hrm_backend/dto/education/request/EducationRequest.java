@@ -1,24 +1,23 @@
-package vn.tdsoftware.hrm_backend.dto.education.response;
+package vn.tdsoftware.hrm_backend.dto.education.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Builder
-public class EducationResponse {
-    private long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
-    private Date toMonth;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
-    private Date fromMonth;
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class EducationRequest {
+    private Long id;
+    private Long employeeId;
+    private LocalDate toMonth;
+    private LocalDate fromMonth;
     private String level;
     private String placeTraining;
     private String major;
     private String methodTraining;
+    private String isUpdate;
 }

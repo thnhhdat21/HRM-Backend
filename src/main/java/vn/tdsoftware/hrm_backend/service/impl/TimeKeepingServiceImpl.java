@@ -1,35 +1,35 @@
 package vn.tdsoftware.hrm_backend.service.impl;
 
-import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.dao.TimeKeepingDAO;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
-import vn.tdsoftware.hrm_backend.dto.timekeeping.request.TimeKeepingClosing;
+import vn.tdsoftware.hrm_backend.dto.timekeeping.request.WorkingDayRequest;
 import vn.tdsoftware.hrm_backend.dto.timekeeping.response.EmployeeTimeKeeping;
 import vn.tdsoftware.hrm_backend.dto.timekeeping.response.EmployeeTimeKeepingResponse;
 import vn.tdsoftware.hrm_backend.dto.timekeeping.response.TimeKeepingResponse;
+import vn.tdsoftware.hrm_backend.dto.timekeeping.response.WorkingDayResponse;
+import vn.tdsoftware.hrm_backend.entity.TimeSheet;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
-import vn.tdsoftware.hrm_backend.repository.DepartmentRepository;
-import vn.tdsoftware.hrm_backend.service.DepartmentService;
+import vn.tdsoftware.hrm_backend.repository.TimeKeepingRepository;
+import vn.tdsoftware.hrm_backend.repository.TimeSheetRepository;
+import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.TimeKeepingService;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class TimeKeepingServiceImpl implements TimeKeepingService {
 
     private final TimeKeepingDAO timeKeepingDAO;
-    private final DepartmentRepository departmentRepository;
+    private final EmployeeService employeeService;
+    private final TimeKeepingRepository timeKeepingRepository;
+    private final TimeSheetRepository timeSheetRepository;
 
     @Override
     public List<EmployeeTimeKeepingResponse> getListTimeKeeping(EmployeeFilter filter) {
@@ -64,22 +64,26 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
                 responseList.add(employeeTimeKeepingResponse);
                 nextDay = startDate;
             }
-            while(!nextDay.isAfter(employeeTimeKeeping.getDateWorking())) {
-                if (nextDay.equals(employeeTimeKeeping.getDateWorking())) {
-                    employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
-                            .dateWorking(employeeTimeKeeping.getDateWorking())
-                            .workDay(employeeTimeKeeping.getWorkDay())
-                            .symbolLetter(employeeTimeKeeping.getSymbolLetter())
-                            .build());
-                    if(checkTime(employeeTimeKeeping.getTimeLate()))
-                        employeeTimeKeepingResponse.setTotalLateDay(employeeTimeKeepingResponse.getTotalLateDay() + 1);
-                } else {
-                    employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
-                            .dateWorking(nextDay)
-                            .workDay(0)
-                            .build());
+            if (employeeTimeKeeping.getDateWorking() != null) {
+                while(!nextDay.isAfter(employeeTimeKeeping.getDateWorking())) {
+                    if (nextDay.equals(employeeTimeKeeping.getDateWorking())) {
+                        employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
+                                .dateWorking(employeeTimeKeeping.getDateWorking())
+                                .workDay(employeeTimeKeeping.getWorkDay())
+                                .symbolLetter(employeeTimeKeeping.getSymbolLetter())
+                                .isLate(employeeTimeKeeping.isLate())
+                                .build());
+                        employeeTimeKeepingResponse.setTotalWorkDay(employeeTimeKeepingResponse.getTotalWorkDay() + employeeTimeKeeping.getWorkDay());
+                        if(employeeTimeKeeping.isLate())
+                            employeeTimeKeepingResponse.setTotalLateDay(employeeTimeKeepingResponse.getTotalLateDay() + 1);
+                    } else {
+                        employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
+                                .dateWorking(nextDay)
+                                .workDay(0)
+                                .build());
+                    }
+                    nextDay = nextDay.plusDays(1);
                 }
-                nextDay = nextDay.plusDays(1);
             }
             index++;
         }
@@ -87,23 +91,32 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
     }
 
     @Override
-    @Transactional
-    public void closingTimeKeeping(TimeKeepingClosing request) {
-        if (request.getDepartments() != null && !request.getDepartments().isEmpty()) {
-            for (Long department : request.getDepartments()) {
-                if (!departmentRepository.existsByIdAndIsEnabled(department, true)) {
-                    throw new BusinessException(ErrorCode.DEPARTMENT_IS_EMPTY);
-                }
-            }
-        }
-        YearMonth yearMonth = YearMonth.from(request.getYearMonth());
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
-        timeKeepingDAO.closingTimeKeeping(request.getDepartments(), startDate, endDate);
+    public int getCountTimeKeeping(EmployeeFilter filter) {
+        return timeKeepingDAO.getCountTimeKeeping(filter);
     }
 
-    private boolean checkTime(LocalTime time) {
-        return time != null && !time.equals(LocalTime.MIDNIGHT);
+    @Override
+    public Boolean timeSheetState(YearMonth yearMonth) {
+        TimeSheet timeSheet = timeSheetRepository.findByYearMonthAndIsEnabled(yearMonth.toString(),true).orElse(null);
+        return timeSheet == null ? null : timeSheet.getIsClosed();
+    }
+
+    @Override
+    @Transactional
+    public void closingTimeKeeping(YearMonth request) {
+        timeKeepingDAO.closingTimeKeeping(request);
+    }
+
+    @Override
+    public WorkingDayResponse getWorkingDay(WorkingDayRequest request) {
+        employeeService.checkEmployeeValidator(request.getEmployeeId());
+        int date = request.getWorkingDay().getDayOfWeek().getValue();
+        if (date == 6 || date == 7) {
+            if(!timeKeepingRepository.existsByEmployeeIdAndDate(request.getEmployeeId(), request.getWorkingDay()))
+                throw new BusinessException(ErrorCode.WORKING_DAY_LEAVE);
+        }
+        WorkingDayResponse response = timeKeepingDAO.getWorkingDay(request);
+        return response;
     }
 
 }

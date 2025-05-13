@@ -1,4 +1,9 @@
 package vn.tdsoftware.hrm_backend.dao;
 
-public class ContractGeneralDAO {
+import org.springframework.stereotype.Repository;
+import vn.tdsoftware.hrm_backend.dto.contract.response.ContractGeneralDetail;
+
+@Repository
+public interface ContractGeneralDAO {
+    ContractGeneralDetail getContractGeneralDetail(long employeeId);
 }

@@ -14,6 +14,8 @@ public class WorkProfileResponseMapper implements RowMapper<WorkProfileResponse>
         try{
             return WorkProfileResponse.builder()
                     .employeeId(resultSet.getLong("employeeId"))
+                    .employeeName(resultSet.getString("employeeName"))
+                    .employeeCode(resultSet.getString("employeeCode"))
                     .status(resultSet.getInt("status"))
                     .type(resultSet.getInt("type"))
                     .department(resultSet.getString("department"))
@@ -21,6 +23,7 @@ public class WorkProfileResponseMapper implements RowMapper<WorkProfileResponse>
                     .duty(resultSet.getString("duty"))
                     .dateJoin(resultSet.getDate("dateJoin"))
                     .dateSign(resultSet.getDate("dateSign"))
+                    .dateOnBoard(resultSet.getDate("dateOnBoard"))
                     .contractName(resultSet.getString("contractName"))
                     .salaryGross(resultSet.getInt("salaryGross"))
                     .account(resultSet.getString("account"))

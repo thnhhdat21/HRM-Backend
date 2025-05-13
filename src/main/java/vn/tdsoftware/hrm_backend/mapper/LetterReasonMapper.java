@@ -6,29 +6,29 @@ import vn.tdsoftware.hrm_backend.entity.LetterReason;
 
 public class LetterReasonMapper {
 
-    public static LetterReasonResponse mapToLetterReasonResponse(LetterReason reasonLetter) {
+    public static LetterReasonResponse mapToLetterReasonResponse(LetterReason letterReason) {
         return LetterReasonResponse.builder()
-                .id(reasonLetter.getId())
-                .reason(reasonLetter.getReason())
-                .maximum(reasonLetter.getMaximum())
-                .workDayEnabled(reasonLetter.getWorkDayEnabled())
-                .createdAt(reasonLetter.getCreatedAt())
-                .des(reasonLetter.getDescription())
-                .status(reasonLetter.getStatus())
+                .id(letterReason.getId())
+                .reason(letterReason.getReason())
+                .maximum(letterReason.getMaximum())
+                .workDayEnabled(letterReason.getWorkDayEnabled())
+                .createdAt(letterReason.getCreatedAt())
+                .des(letterReason.getDescription())
+                .status(letterReason.getStatus())
                 .build();
     }
 
-    public static LetterReasonDetail mapToLetterReasonDetail(LetterReason reasonLetter) {
+    public static LetterReasonDetail  mapToLetterReasonDetail(LetterReason letterReason) {
         return LetterReasonDetail.builder()
-                .id(reasonLetter.getId())
-                .reason(reasonLetter.getReason())
-                .symbol(reasonLetter.getReason())
-                .maximum(reasonLetter.getMaximum())
-                .unit(reasonLetter.getUnit())
-                .workDayEnabled(reasonLetter.getWorkDayEnabled())
-                .goLate(reasonLetter.getGoLate())
-                .backEarly(reasonLetter.getBackEarly())
-                .des(reasonLetter.getDescription())
+                .id(letterReason.getId())
+                .reason(letterReason.getReason())
+                .symbol(letterReason.getReason())
+                .maximum(letterReason.getMaximum())
+                .unit(letterReason.getUnit())
+                .workDayEnabled(letterReason.getWorkDayEnabled())
+                .goLate(letterReason.getGoLate())
+                .backEarly(letterReason.getBackEarly())
+                .des(letterReason.getDescription())
                 .build();
     }
 }

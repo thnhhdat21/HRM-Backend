@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.entity.onleave.response;
+package vn.tdsoftware.hrm_backend.dto.onleave.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class OnLeaveResponse {
-    private long employeeId;
-    private int totalDay;
-    private int usedDay;
+    private double seniorDay;
+    private double regulaDay;
+    private double usedDay;
 }

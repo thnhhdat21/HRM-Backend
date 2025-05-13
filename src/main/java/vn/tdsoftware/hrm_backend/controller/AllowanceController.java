@@ -54,4 +54,14 @@ public class AllowanceController {
                 .build();
     }
 
+    @PostMapping("/get-allowance-by-contract-type")
+    public ResponseData<List<AllowanceResponse>> getAllowanceByContractType(@RequestParam("contractTypeId") long contractTypeId) {
+        List<AllowanceResponse>  responses = allowanceService.getAllowanceByContractType(contractTypeId);
+        return ResponseData.<List<AllowanceResponse>>builder()
+                .code(1000)
+                .data(responses)
+                .message("Delete successfully")
+                .build();
+    }
+
 }

@@ -14,6 +14,7 @@ import vn.tdsoftware.hrm_backend.mapper.DepartmentMapper;
 import vn.tdsoftware.hrm_backend.repository.DepartmentRepository;
 import vn.tdsoftware.hrm_backend.service.DepartmentService;
 import vn.tdsoftware.hrm_backend.util.FieldStringUtil;
+import vn.tdsoftware.hrm_backend.util.constant.DepartmentLevelConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +80,18 @@ public class DepartmentServiceImp implements DepartmentService {
         return DepartmentMapper.mapToDepartmentDetailResponse(departmentSaved);
     }
 
+    @Override
+    public List<DepartmentResponse> getListDepartmentChild() {
+        List<Department> departmentList = departmentRepository.findAllByDepartmentLevelAndIsEnabled(DepartmentLevelConstant.DEPARTMENT, true).orElseThrow(
+                () -> new BusinessException(ErrorCode.DEPARTMENT_IS_EMPTY)
+        );
+        List<DepartmentResponse> listResponse = new ArrayList<>();
+        for (Department department : departmentList) {
+            listResponse.add(DepartmentMapper.mapToDepartmentResponse(department));
+        }
+        return listResponse;
+    }
+
     private List<DepartmentTreeResponse> buildTree(List<DepartmentTreeResponse> list) {
         HashMap<Long, DepartmentTreeResponse> map = new HashMap<>();
         List<DepartmentTreeResponse> listResponse = new ArrayList<>();
@@ -102,7 +115,6 @@ public class DepartmentServiceImp implements DepartmentService {
                 parent.getChildren().add(department);
             }
         }
-        System.out.println(map.get(1L));
         return listResponse;
     }
 }

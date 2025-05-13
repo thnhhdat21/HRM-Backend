@@ -3,6 +3,7 @@ package vn.tdsoftware.hrm_backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
+import vn.tdsoftware.hrm_backend.dao.RoleDAO;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleRequest;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleUpdateRequest;
 import vn.tdsoftware.hrm_backend.dto.role.response.RoleDetailResponse;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequestMapping("/role")
 @RequiredArgsConstructor
 public class RoleController {
-
     private final RoleService roleService;
 
     @PostMapping("/list-role")
