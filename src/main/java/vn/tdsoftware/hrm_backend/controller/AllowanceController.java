@@ -17,7 +17,7 @@ public class AllowanceController {
     private final AllowanceService allowanceService;
 
     @PostMapping("/get-allowance-by-contract-type")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_CONTRACT', 'ROLE_CREATE_CONTRACT')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_CONTRACT', 'ROLE_CREATE_CONTRACT', 'ADMIN')")
     public ResponseData<List<AllowanceResponse>> getAllowanceByContractType(@RequestParam("contractTypeId") long contractTypeId) {
         List<AllowanceResponse>  responses = allowanceService.getAllowanceByContractType(contractTypeId);
         return ResponseData.<List<AllowanceResponse>>builder()

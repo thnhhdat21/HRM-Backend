@@ -18,7 +18,8 @@ public class ContractController {
     @PostMapping("/get-work-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
                                     "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT')")
+                                    "'ROLE_WATCH_SELF_CONTRACT'," +
+                                    "'ADMIN')")
     public ResponseData<WorkProfileResponse> getWorkProfile(@RequestParam("employeeId") long employeeId) {
         WorkProfileResponse response = contractService.getWorkProfile(employeeId);
         return ResponseData.<WorkProfileResponse>builder()
@@ -31,7 +32,8 @@ public class ContractController {
     @PostMapping("/get-work-process-profile")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
                                     "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT')")
+                                    "'ROLE_WATCH_SELF_CONTRACT', " +
+                                    "'ADMIN')")
     public ResponseData<List<WorkProcessResponse>> getContractHistory(@RequestParam("employeeId") long employeeId) {
         List<WorkProcessResponse> response = contractService.getWorkProcess(employeeId);
         return ResponseData.<List<WorkProcessResponse>>builder()
@@ -44,7 +46,7 @@ public class ContractController {
     @PostMapping("/get-contract-profile-by-employee-id")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
                                     "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT')")
+                                    "'ROLE_WATCH_SELF_CONTRACT', 'ADMIN')")
     public ResponseData<ContractProfileResponse> getContractProfileByEmployee(@RequestParam("employeeId") long employeeId) {
         ContractProfileResponse response = contractService.getContractProfileByEmployee(employeeId);
         return ResponseData.<ContractProfileResponse>builder()
@@ -57,7 +59,7 @@ public class ContractController {
     @PostMapping("/get-contract-profile-by-contract-id")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
                                     "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT')")
+                                    "'ROLE_WATCH_SELF_CONTRACT', 'ADMIN')")
     public ResponseData<ContractProfileResponse> getContractProfileByContractId(@RequestParam("contractId") long contractId) {
         ContractProfileResponse response = contractService.getContractProfileByContractId(contractId);
         return ResponseData.<ContractProfileResponse>builder()
@@ -70,7 +72,7 @@ public class ContractController {
     @PostMapping("/get-list-contract-of-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
                                     "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT')")
+                                    "'ROLE_WATCH_SELF_CONTRACT', 'ADMIN')")
     public ResponseData<List<ContractOfEmployeeResponse>> getListContractOfEmployee(@RequestParam("employeeId") long employeeId) {
         List<ContractOfEmployeeResponse>  responses = contractService.getListContractOfEmployee(employeeId);
         return ResponseData.<List<ContractOfEmployeeResponse>>builder()
