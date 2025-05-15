@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
+import vn.tdsoftware.hrm_backend.dao.PermissionDAO;
+import vn.tdsoftware.hrm_backend.dto.account.response.AccountLoginResponse;
 import vn.tdsoftware.hrm_backend.dto.auth.request.LoginRequest;
 import vn.tdsoftware.hrm_backend.dto.auth.response.TokenResponse;
 import vn.tdsoftware.hrm_backend.entity.Account;
@@ -19,8 +21,14 @@ import vn.tdsoftware.hrm_backend.service.JwtService;
 import vn.tdsoftware.hrm_backend.service.TokenService;
 import vn.tdsoftware.hrm_backend.util.constant.AccountConstant;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.springframework.http.HttpHeaders.REFERER;
 import static vn.tdsoftware.hrm_backend.util.TokenType.REFRESH_TOKEN;
+import static vn.tdsoftware.hrm_backend.util.constant.RoleConstant.ADMIN;
 
 @Slf4j
 @Service
@@ -30,6 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenService tokenService;
+    private final PermissionDAO permissionDAO;
 
     @Override
     public TokenResponse authenticate(LoginRequest loginRequest) {
@@ -52,13 +61,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String accessToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
 
+        List<String> roles = jwtService.extractRoles(accessToken);
+        List<String> permissions = new ArrayList<>();
+        if (ADMIN.equals(roles.get(0))) {
+            permissions.add(ADMIN);
+        } else {
+            permissions = jwtService.extractPermissions(accessToken);
+        }
+
         //Lưu token vào redis
         tokenService.storeTokens(account.getUsername(), accessToken, refreshToken);
+
+        AccountLoginResponse accountLogin = AccountLoginResponse.builder()
+                .employeeId(account.getEmployeeId())
+                .permissions(permissions)
+                .build();
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .authorities(account.getAuthorities())
+                .account(accountLogin)
                 .build();
     }
 

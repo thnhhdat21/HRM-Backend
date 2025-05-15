@@ -3,9 +3,9 @@ package vn.tdsoftware.hrm_backend.common.exception;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +16,6 @@ import vn.tdsoftware.hrm_backend.common.enums.ResponseCode;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -72,11 +71,11 @@ public class GlobalExceptionHandler {
 //            log.info("Invalid UserName");
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 //                    .body(response);
-        } else if (exception instanceof ExpiredJwtException) {
-            response.setMessage("Token hết hạn");
-            response.setCode(ResponseCode.TOKEN_EXPIRATION.getCode());
-            response.setError(ResponseCode.TOKEN_EXPIRATION.getMessage());
-            log.info("Token hết hạn");
+        } else if (exception instanceof AuthorizationDeniedException) {
+            response.setMessage("Không có quyền truy cập");
+            response.setCode(ResponseCode.NO_AUTHORIZATION.getCode());
+            response.setError(ResponseCode.NO_AUTHORIZATION.getMessage());
+            log.info("Không có quyền truy cập");
             return ResponseEntity.status(HttpStatus.OK)
                     .body(response);
         }else {

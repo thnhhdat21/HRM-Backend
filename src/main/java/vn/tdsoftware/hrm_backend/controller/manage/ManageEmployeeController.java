@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

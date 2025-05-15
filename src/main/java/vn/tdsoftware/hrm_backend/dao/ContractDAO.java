@@ -2,6 +2,7 @@ package vn.tdsoftware.hrm_backend.dao;
 
 import org.springframework.stereotype.Repository;
 import vn.tdsoftware.hrm_backend.dto.contract.response.*;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 
 import java.time.LocalDate;
@@ -17,5 +18,6 @@ public interface ContractDAO {
     List<ContractOfEmployeeResponse> getListContractOfEmployee(long employeeId);
     List<ContractResponse> getListContract(EmployeeFilter filter);
     int countContractAppendix(long contractId);
+    List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter);
 
 }

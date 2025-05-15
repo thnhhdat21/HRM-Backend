@@ -26,4 +26,17 @@ public class AllowanceController {
                 .message("Delete successfully")
                 .build();
     }
+
+    @PostMapping("/get-list-allowance")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_CONTRACT', 'ROLE_CREATE_CONTRACT', 'ADMIN')")
+    public ResponseData<List<AllowanceResponse>> getList() {
+        List<AllowanceResponse> response = allowanceService.getListAllowance();
+        return ResponseData.<List<AllowanceResponse>>builder()
+                .code(1000)
+                .data(response)
+                .message("Get list successfully")
+                .build();
+    }
+
+
 }

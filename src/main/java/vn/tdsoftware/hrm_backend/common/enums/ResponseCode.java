@@ -11,6 +11,7 @@ public enum ResponseCode {
     TOKEN_ERROR("10", "Token Error"),
     BAD_CREDENTIALS("11", "Invalid Username or Password"),
     TOKEN_EXPIRATION("12", "Token expired"),
+    NO_AUTHORIZATION("13", "Không có quyền truy cập"),
     GENERAL_EXCEPTION("99", "Unknown error"),
     ;
     private final String code;

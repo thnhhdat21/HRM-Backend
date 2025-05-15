@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,6 +8,7 @@ import vn.tdsoftware.hrm_backend.dto.contract.request.ContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.EndContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.response.ContractDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.contract.response.ContractResponse;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.service.ContractService;
 
@@ -51,13 +52,24 @@ public class ManageContractController {
     }
 
     @PostMapping("/get-list-contract")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT', 'ADMIN')")
     public ResponseData<List<ContractResponse>> getListContract(@RequestBody EmployeeFilter filter) {
         List<ContractResponse> responses = contractService.getListContract(filter);
         return ResponseData.<List<ContractResponse>>builder()
                 .code(1000)
                 .data(responses)
                 .message("Get list contract successfully")
+                .build();
+    }
+
+    @PostMapping("/get-count-contract-type")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
+    public ResponseData<List<CountContractTypeResponse>> getCountContractType(@RequestBody EmployeeFilter filter) {
+        List<CountContractTypeResponse> response = contractService.getCountContractType(filter);
+        return ResponseData.<List<CountContractTypeResponse>>builder()
+                .code(1000)
+                .data(response)
+                .message("Get contract type successfully")
                 .build();
     }
 

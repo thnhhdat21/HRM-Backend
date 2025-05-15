@@ -48,7 +48,7 @@ public class OnLeaveServiceImpl implements OnLeaveService {
         OnLeave onLeave = onleaveRepository.findByEmployeeIdAndYearAndIsEnabled(request.getEmployeeId(), currentYear, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.ON_LEAVE_IS_EMPTY)
         );
-        if (request.getRegulaDay() <= 0 || request.getUsedDay() <=0 || request.getUsedDay() > request.getRegulaDay()) {
+        if (request.getRegulaDay() <= 0 || request.getUsedDay() > request.getRegulaDay()) {
             throw new BusinessException(ErrorCode.TIME_ON_LEAVE_INVALID);
         }
         onLeave.setSeniorDay(request.getSeniorDay());

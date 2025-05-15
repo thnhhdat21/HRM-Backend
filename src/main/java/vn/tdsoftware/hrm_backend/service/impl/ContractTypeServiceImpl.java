@@ -116,15 +116,6 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter) {
-        List<CountContractTypeResponse> responses = contractTypeDAO.getCountContractType(filter);
-        if (responses.isEmpty()) {
-            throw new BusinessException(ErrorCode.LIST_TYPE_CONTRACT_IS_EMPTY);
-        }
-        return responses;
-    }
-
-    @Override
     public void deleteContractType(long id) {
         ContractType contractType = contractTypeRepository.findByIdAndIsEnabled(id, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.TYPE_CONTRACT_IS_EMPTY)

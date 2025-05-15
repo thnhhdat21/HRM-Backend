@@ -1,6 +1,5 @@
 package vn.tdsoftware.hrm_backend.controller;
 
-import io.minio.messages.ResponseDate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.auth.request.LoginRequest;
 import vn.tdsoftware.hrm_backend.dto.auth.response.TokenResponse;
 import vn.tdsoftware.hrm_backend.service.AuthenticationService;
-import vn.tdsoftware.hrm_backend.service.UserService;
 
 @RestController
 @RequestMapping("/auth")

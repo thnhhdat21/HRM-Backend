@@ -1,7 +1,6 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;

@@ -14,6 +14,5 @@ public interface ContractTypeService {
     ContractTypeResponse createContractType(ContractTypeRequest typeContractRequest);
     ContractTypeDetail getContractType(long id);
     ContractTypeResponse updateContractType(ContractTypeUpdate typeContractRequest);
-    List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter);
     void deleteContractType(long id);
 }

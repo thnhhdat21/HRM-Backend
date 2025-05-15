@@ -37,6 +37,7 @@ public class RedisConfig {
     @Primary
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
+
         template.setKeySerializer(stringRedisSerializer());
         template.setValueSerializer(stringRedisSerializer());
 

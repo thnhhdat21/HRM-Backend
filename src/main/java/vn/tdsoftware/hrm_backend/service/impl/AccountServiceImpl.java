@@ -2,6 +2,7 @@ package vn.tdsoftware.hrm_backend.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
 import vn.tdsoftware.hrm_backend.common.service.EmailService;
@@ -30,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<AccountResponse> getListAccount(int type) {
@@ -64,7 +66,13 @@ public class AccountServiceImpl implements AccountService {
             throw new BusinessException(ErrorCode.PASSWORD_INVALID);
         }
         Account account = checkAccount(id);
-        account.setPassword(password);
+        Employee employee = employeeRepository.findByIdAndIsEnabled(account.getEmployeeId(), true).orElseThrow(
+                () -> new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY)
+        );
+        account.setPassword(passwordEncoder.encode(password));
+
+        Thread sendEmailThread = new Thread(new SendMailThread(emailService, employee.getEmail(), account.getUsername(), account.getPassword()));
+        sendEmailThread.start();
         accountRepository.save(account);
     }
 
@@ -96,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
         sendEmailThread.start();
         account.setStatus(AccountConstant.ACCOUNT_ACTIVE);
         account.setActiveAt(new Date());
-        account.setPassword(request.getPassword());
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
         accountRepository.save(account);
         return employee.getFullName();
     }

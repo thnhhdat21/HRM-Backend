@@ -16,9 +16,9 @@ public class ContractController {
     private final ContractService contractService;
 
     @PostMapping("/get-work-profile-employee")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
-                                    "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT'," +
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY', " +
+                                    "'ROLE_WATCH_EMPLOYEE_DEPARTMENT', " +
+                                    "'ROLE_WATCH_SELF_EMPLOYEE'," +
                                     "'ADMIN')")
     public ResponseData<WorkProfileResponse> getWorkProfile(@RequestParam("employeeId") long employeeId) {
         WorkProfileResponse response = contractService.getWorkProfile(employeeId);
@@ -30,9 +30,9 @@ public class ContractController {
     }
 
     @PostMapping("/get-work-process-profile")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', " +
-                                    "'ROLE_WATCH_CONTRACT_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_CONTRACT', " +
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY', " +
+                                    "'ROLE_WATCH_EMPLOYEE_DEPARTMENT', " +
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', " +
                                     "'ADMIN')")
     public ResponseData<List<WorkProcessResponse>> getContractHistory(@RequestParam("employeeId") long employeeId) {
         List<WorkProcessResponse> response = contractService.getWorkProcess(employeeId);

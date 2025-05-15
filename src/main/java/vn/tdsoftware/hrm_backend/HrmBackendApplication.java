@@ -58,6 +58,9 @@ public class HrmBackendApplication implements CommandLineRunner {
 //	@Autowired
 //	private ContractRepository contractRepository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public static void main(String[] args) {
 		SpringApplication.run(HrmBackendApplication.class, args);
 	}
@@ -280,5 +283,6 @@ public class HrmBackendApplication implements CommandLineRunner {
 //		}
 
 //		contractScheduler.activeContract();
+//		System.out.println(passwordEncoder.encode("thanhdat2"));
 	}
 }

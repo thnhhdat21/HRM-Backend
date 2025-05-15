@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,6 @@ import java.util.List;
 public class ManageDutyController {
     private final DutyService dutyService;
     private final Gson gson;
-
-    @PostMapping("/get-list-duty")
-    private ResponseData<List<DutyResponse>> getListDuty() {
-        List<DutyResponse> response = dutyService.getListDuty();
-        return ResponseData.<List<DutyResponse>>builder()
-                .code(1000)
-                .data(response)
-                .message("Get list duty successfully")
-                .build();
-    }
 
     @PostMapping("/add-duty")
     private ResponseData<List<DutyResponse>> addDuty(@RequestBody List<DutyRequest> dutyRequest) {

@@ -67,10 +67,6 @@ public class EmployeeController {
     }
 
     @PostMapping("/get-list-employee")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
-                                    "'ROLE_CREATE_EMPLOYEE'," +
-                                    "'ROLE_MANAGE_DECISION'," +
-                                    "'ROLE_CREATE_DECISION')")
     public ResponseData<List<EmployeeSelectResponse>> getListEmployee() {
         List<EmployeeSelectResponse> response = employeeService.getListEmployee();
         return ResponseData.<List<EmployeeSelectResponse>>builder()

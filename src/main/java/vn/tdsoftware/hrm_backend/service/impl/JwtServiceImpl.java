@@ -68,6 +68,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public List<String> extractRoles(String token) {
+        return extractRole(token);
+    }
+
+    @Override
     public Long extractDepartment(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getKey(ACCESS_TOKEN))
@@ -103,7 +108,7 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 ))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *  60 * expiryTime))
                 .signWith(getKey(ACCESS_TOKEN),SignatureAlgorithm.HS256)
                 .compact();
     }

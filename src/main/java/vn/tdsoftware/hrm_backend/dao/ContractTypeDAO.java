@@ -11,5 +11,4 @@ import java.util.List;
 public interface ContractTypeDAO {
     ContractTypeDetail getContractType(long id);
     void deleteAllowance(long id);
-    List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter);
 }

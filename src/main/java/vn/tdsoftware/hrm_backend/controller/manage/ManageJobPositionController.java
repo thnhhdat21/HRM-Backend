@@ -1,16 +1,13 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.jobposition.request.JobPositionRequest;
 import vn.tdsoftware.hrm_backend.dto.jobposition.response.JobPositionDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.jobposition.response.JobPositionResponse;
 import vn.tdsoftware.hrm_backend.service.JobPositionService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/job-position")

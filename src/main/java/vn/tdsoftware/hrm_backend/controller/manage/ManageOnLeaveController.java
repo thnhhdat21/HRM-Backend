@@ -1,13 +1,11 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
-import vn.tdsoftware.hrm_backend.dto.onleave.request.OnLeaveRequest;
 import vn.tdsoftware.hrm_backend.dto.onleave.response.EmployeeOnLeaveResponse;
-import vn.tdsoftware.hrm_backend.dto.onleave.response.OnLeaveResponse;
 import vn.tdsoftware.hrm_backend.service.OnLeaveService;
 
 import java.util.List;

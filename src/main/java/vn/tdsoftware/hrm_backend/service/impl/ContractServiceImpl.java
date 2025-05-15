@@ -11,6 +11,7 @@ import vn.tdsoftware.hrm_backend.dto.contract.request.ContractHasAllowanceReques
 import vn.tdsoftware.hrm_backend.dto.contract.request.ContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.request.EndContractRequest;
 import vn.tdsoftware.hrm_backend.dto.contract.response.*;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.entity.*;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
@@ -42,11 +43,12 @@ public class ContractServiceImpl implements ContractService {
     private final ContractGeneralHasAllowanceRepository contractgeneralHasAllowanceRepository;
     private final InsuranceRepository insuranceRepository;
     private final PerContractUtil perContractUtil;
+    private final PerEmployeeUtil perEmployeeUtil;
 
     @Override
     public WorkProfileResponse getWorkProfile(long employeeId) {
         checkEmployeeValidator(employeeId);
-        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         WorkProfileResponse response = contractDAO.getWorkProfile(employeeId);
 
         if (response == null) {
@@ -58,7 +60,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<WorkProcessResponse> getWorkProcess(long employeeId) {
         checkEmployeeValidator(employeeId);
-        perContractUtil.checkSameDepartmentByEmployeeId(employeeId);
+        perEmployeeUtil.checkWatchSameDepartmentByEmployeeId(employeeId);
         List<WorkProcessResponse> response = contractDAO.getWorkProcess(employeeId);
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.CONTRACT_HISTORY_IS_EMPTY);
@@ -222,6 +224,15 @@ public class ContractServiceImpl implements ContractService {
         List<ContractResponse> responses = contractDAO.getListContract(filter);
         if (responses.isEmpty()) {
             throw new BusinessException(ErrorCode.CONTRACT_IS_EMPTY);
+        }
+        return responses;
+    }
+
+    @Override
+    public List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter) {
+        List<CountContractTypeResponse> responses = contractDAO.getCountContractType(filter);
+        if (responses.isEmpty()) {
+            throw new BusinessException(ErrorCode.LIST_TYPE_CONTRACT_IS_EMPTY);
         }
         return responses;
     }

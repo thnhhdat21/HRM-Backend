@@ -14,7 +14,6 @@ public class AccountResponse {
     private String username;
     private String role;
     private String employeeCode;
-    private Long employeeId;
     private String fullName;
     private String department;
     private Date createDate;

@@ -18,15 +18,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.entity.Account;
+import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.service.JwtService;
 import vn.tdsoftware.hrm_backend.service.TokenService;
 import vn.tdsoftware.hrm_backend.service.UserService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static vn.tdsoftware.hrm_backend.util.TokenType.ACCESS_TOKEN;
+import static vn.tdsoftware.hrm_backend.util.constant.RoleConstant.ADMIN;
 
 @Component
 @Slf4j
@@ -40,46 +43,57 @@ public class PreFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("---------------------PreFilter-------------------");
+        try {
+            final String authorization = request.getHeader("Authorization");
+            log.info("Authorization {}", authorization);
 
-        final String authorization = request.getHeader("Authorization");
-        log.info("Authorization {}", authorization);
-
-        if (StringUtils.isBlank(authorization) || !authorization.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        final String token = authorization.substring("Bearer ".length());
-
-        if (tokenService.isAccessTokenBlacklisted(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
-        List<String> permissions = jwtService.extractPermissions(token);
-        Long departmentId = jwtService.extractDepartment(token);
-
-        List<GrantedAuthority> authorities = permissions
-                .stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-
-        log.info("UserInfo: username: {} \nPermission: {}", username, authorities);
-
-        if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
-            if (jwtService.isValid(token, ACCESS_TOKEN, userDetails)) {
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                context.setAuthentication(authentication);
-                SecurityContextHolder.setContext(context);
-
-                // set cho user Hien tai
-                CurrentAccountDTO.create(((Account) userDetails).getEmployeeId(), departmentId ,permissions);
-                log.info("CurrentAccountDTO: {}", CurrentAccountDTO.getEmployeeId());
+            if (StringUtils.isBlank(authorization) || !authorization.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
             }
+            final String token = authorization.substring("Bearer ".length());
+
+            if (tokenService.isAccessTokenBlacklisted(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
+            List<String> roles = jwtService.extractRoles(token);
+            List<String> permissions = new ArrayList<>();
+            if (ADMIN.equals(roles.get(0))) {
+                permissions.add(ADMIN);
+            } else {
+                permissions = jwtService.extractPermissions(token);
+            }
+
+            Long departmentId = jwtService.extractDepartment(token);
+            List<GrantedAuthority> authorities = permissions
+                    .stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
+            log.info("UserInfo: username: {} \nPermission: {}", username, authorities);
+            if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+                if (jwtService.isValid(token, ACCESS_TOKEN, userDetails)) {
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    context.setAuthentication(authentication);
+                    SecurityContextHolder.setContext(context);
+
+                    // set cho user Hien tai
+                    CurrentAccountDTO.create(((Account) userDetails).getEmployeeId(), departmentId ,permissions);
+                    log.info("CurrentAccountDTO: {}", CurrentAccountDTO.getEmployeeId());
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            log.warn("Token đã hết hạn!");
+            response.setStatus(HttpServletResponse.SC_OK); // 401
+            response.setContentType("application/json");
+            response.getWriter().write("{\"code\": " + ErrorCode.TOKEN_EXPIRED.getCode() + ",\n\"error\": \"Token expired\"}");
         }
-        filterChain.doFilter(request, response);
     }
 }

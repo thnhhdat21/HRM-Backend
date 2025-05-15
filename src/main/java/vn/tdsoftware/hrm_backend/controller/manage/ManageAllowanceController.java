@@ -1,4 +1,4 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,17 +13,9 @@ import java.util.List;
 @RequestMapping("/admin/allowance")
 @RequiredArgsConstructor
 public class ManageAllowanceController {
-
     private final AllowanceService allowanceService;
-    @PostMapping("/get-list-allowance")
-    public ResponseData<List<AllowanceResponse>> getList() {
-        List<AllowanceResponse> response = allowanceService.getListAllowance();
-        return ResponseData.<List<AllowanceResponse>>builder()
-                .code(1000)
-                .data(response)
-                .message("Get list successfully")
-                .build();
-    }
+
+
     @PostMapping("/create-allowance")
     public ResponseData<List<AllowanceResponse>> createAllowance(@RequestBody List<AllowanceRequest> request) {
         List<AllowanceResponse> response = allowanceService.createAllowance(request);

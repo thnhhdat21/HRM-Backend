@@ -4,7 +4,9 @@ import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Component;
 import vn.tdsoftware.hrm_backend.dao.ContractDAO;
 import vn.tdsoftware.hrm_backend.dto.contract.response.*;
+import vn.tdsoftware.hrm_backend.dto.contracttype.response.CountContractTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
+import vn.tdsoftware.hrm_backend.mapper.response.CountContractTypeMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.contract.*;
 import vn.tdsoftware.hrm_backend.util.SQLUtil;
 import vn.tdsoftware.hrm_backend.util.constant.FilterConstant;
@@ -246,6 +248,25 @@ public class ContractDAOImpl extends AbstractDao<Work> implements ContractDAO {
                 "where contract.isEnabled = true " +
                 "and contract.parent = ? ";
         return count(sql, contractId);
+    }
+
+    @Override
+    public List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter) {
+        StringBuilder sql = new StringBuilder("select " +
+                "contractType.id, " +
+                "contractType.name, " +
+                "COALESCE(countList.count, 0) as count " +
+                "from contractType left join " +
+                "(select contractType.id , contractType.name, count(contract.id) as count " +
+                "from contract " +
+                "left join employee ec on contract.createdBy = ec.id " +
+                "left join employee on contract.employeeId = employee.id " +
+                "left join department on contract.departmentId = department.id " +
+                "left join contractType on contract.type = contractType.id " +
+                "where contract.isEnabled = true and contract.parent is null ");
+        sql.append(SQLUtil.sqlFilter(filter, FilterConstant.TYPE_CONTRACT));
+        sql.append(" group by contractType.id , contractType.name) countList on contractType.id = countList.id");
+        return query(sql.toString(), new CountContractTypeMapper());
     }
 
 }

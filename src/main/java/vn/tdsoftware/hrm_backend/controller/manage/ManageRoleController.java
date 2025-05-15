@@ -1,9 +1,8 @@
-package vn.tdsoftware.hrm_backend.controller;
+package vn.tdsoftware.hrm_backend.controller.manage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
-import vn.tdsoftware.hrm_backend.dao.RoleDAO;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleRequest;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleUpdateRequest;
 import vn.tdsoftware.hrm_backend.dto.role.response.RoleDetailResponse;

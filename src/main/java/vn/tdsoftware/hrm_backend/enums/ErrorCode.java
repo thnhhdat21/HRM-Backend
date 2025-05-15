@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    TOKEN_EXPIRED(996, "Token hết hạn"),
     MINIO_GET_FILE_ERROR(997, "Lỗi get file"),
     MINIO_UPLOAD_ERROR(998, "Lỗi upload file"),
 
