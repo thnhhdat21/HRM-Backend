@@ -14,4 +14,5 @@ public interface RoleDAO {
     void removeRole(int id);
     String getPermission(int id);
     List<String> getRoleByUsername(String username);
+    List<Boolean> isRoleAdminByUsername(String username);
 }

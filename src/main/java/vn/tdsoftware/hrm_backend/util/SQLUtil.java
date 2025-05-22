@@ -27,6 +27,8 @@ public class SQLUtil {
             sql.append(" and letter.state = ").append(filter.getType());
         }else if (typeFiler == FilterConstant.TYPE_INSURANCE && filter.getStatus() != null && filter.getStatus() > 0) {
             sql.append(" and insurance.status = ").append(filter.getStatus());
+        }else if (typeFiler == FilterConstant.TYPE_ACCOUNT && filter.getStatus() != null && filter.getStatus() > 0) {
+            sql.append(" and account.status = ").append(filter.getStatus());
         }
 
 

@@ -10,6 +10,7 @@ public class ResumeMapper {
                         .fullName(request.getFullName())
                         .dateOfBirth(request.getDateOfBirth())
                         .gender(request.isGender())
+                        .type(request.getType())
                         .marriageStatus(request.isMarriageStatus())
                         .nation(request.getNation())
                         .phoneNumber(request.getPhoneNumber())

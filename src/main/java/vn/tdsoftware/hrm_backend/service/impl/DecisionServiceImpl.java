@@ -425,7 +425,7 @@ public class DecisionServiceImpl implements DecisionService {
                         .contractType(contractGeneral.getType())
                         .department(transferAndAppointDecision.getDepartmentNew())
                         .jobPosition(transferAndAppointDecision.getJobPositionNew())
-                        .dateStart(LocalDate.now())
+                        .dateStart(decision.getDate())
                         .dateSign(LocalDate.now())
                         .parent(contractGeneral.getContractOriginal())
                         .createType(ContractConstant.CONTRACT_CREATE_APPENDIX)

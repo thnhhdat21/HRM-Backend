@@ -11,5 +11,7 @@ import java.util.List;
 @Builder
 public class AccountLoginResponse {
     private long employeeId;
+    private String employeeName;
+    private String jobPosition;
     private List<String> permissions;
 }

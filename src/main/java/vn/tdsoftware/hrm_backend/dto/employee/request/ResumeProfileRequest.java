@@ -14,6 +14,7 @@ public class ResumeProfileRequest {
     private String fullName;
     private LocalDate dateOfBirth;
     private boolean gender;
+    private int type;
     private boolean marriageStatus;
     private String nation;
     private String phoneNumber;

@@ -25,4 +25,14 @@ public class LetterReasonController {
                 .message("get list letter-reason")
                 .build();
     }
+
+    @PostMapping("/get-letter-reason-detail")
+    public ResponseData<LetterReasonDetail> getLetterReasonDetail(@RequestParam("id") Long id) {
+        LetterReasonDetail response = letterReasonService.getLetterReasonDetail(id);
+        return ResponseData.<LetterReasonDetail>builder()
+                .code(1000)
+                .data(response)
+                .message("Update letter-reason")
+                .build();
+    }
 }

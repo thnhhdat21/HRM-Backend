@@ -16,7 +16,7 @@ public class AccountUtil {
         for (int i = 0; i < parts.length - 1; i++) {
             username.append(parts[i].charAt(0));
         }
-        return username.toString() + employeeId;
+        return username.toString() + employeeId + "@tds.vn";
     }
 
 }

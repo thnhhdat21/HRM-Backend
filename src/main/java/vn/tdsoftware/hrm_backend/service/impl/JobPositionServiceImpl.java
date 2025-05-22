@@ -99,10 +99,9 @@ public class JobPositionServiceImpl implements JobPositionService {
         if (duty == null) {
             throw new BusinessException(ErrorCode.DUTY_NOT_EXIST);
         }
-        Role role = roleRepository.findByIdAndIsEnabled(jobPositionRequest.getRoleId(), true);
-        if (role == null) {
-            throw new BusinessException(ErrorCode.ROLE_NOT_EXISTED);
-        }
+        roleRepository.findByIdAndIsEnabled(jobPositionRequest.getRoleId(), true).orElseThrow(
+                () -> new BusinessException(ErrorCode.ROLE_NOT_EXISTED)
+        );
     }
 
 }

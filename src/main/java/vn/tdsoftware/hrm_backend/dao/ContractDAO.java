@@ -19,5 +19,6 @@ public interface ContractDAO {
     List<ContractResponse> getListContract(EmployeeFilter filter);
     int countContractAppendix(long contractId);
     List<CountContractTypeResponse> getCountContractType(EmployeeFilter filter);
+    int getCountContract(EmployeeFilter filter);
 
 }

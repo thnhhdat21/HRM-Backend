@@ -19,7 +19,7 @@ public class SalaryTableController {
     private final SalaryTableService salaryTableService;
 
     @PostMapping("/get-salary-table")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_COMPANY')")
     public ResponseData<List<SalaryTableResponse>> getListSalary() {
         List<SalaryTableResponse> responses = salaryTableService.getListSalaryTable();
         return ResponseData.<List<SalaryTableResponse>>builder()
@@ -30,7 +30,7 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-salary-table-department")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<List<SalaryTableResponse>> getListSalaryOfDepartment() {
         List<SalaryTableResponse> responses = salaryTableService.getListSalaryTableOfDepartment();
         return ResponseData.<List<SalaryTableResponse>>builder()
@@ -41,7 +41,7 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-list-salary-detail")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_COMPANY'," +
                                     "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<List<SalaryDetailResponse>> getListSalary(@RequestBody EmployeeFilter filter) {
         List<SalaryDetailResponse> responses = salaryTableService.getListSalaryDetail(filter);
@@ -53,7 +53,7 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-count-salary-detail")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_COMPANY'," +
             "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<Integer> getCountSalaryDetail(@RequestBody EmployeeFilter filter) {
         int responses = salaryTableService.getCountSalaryDetail(filter);
@@ -65,7 +65,7 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-list-tax")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_COMPANY'," +
                                     "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<List<TaxResponse>> getListTax(@RequestBody EmployeeFilter filter) {
         List<TaxResponse> responses = salaryTableService.getListTax(filter);
@@ -77,7 +77,7 @@ public class SalaryTableController {
     }
 
     @PostMapping("/get-count-tax")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SALARY_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_SALARY_COMPANY'," +
                                     "'ROLE_WATCH_SALARY_DEPARTMENT')")
     public ResponseData<Integer> getCountTax(@RequestBody EmployeeFilter filter) {
         int responses = salaryTableService.getCountTax(filter);

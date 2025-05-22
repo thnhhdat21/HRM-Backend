@@ -19,5 +19,5 @@ public class RoleDetailResponse {
     private String description;
     private boolean accountAdmin;
     private boolean accountDefault;
-    private String permissions;
+    private List<PermissionResponse> permissions;
 }

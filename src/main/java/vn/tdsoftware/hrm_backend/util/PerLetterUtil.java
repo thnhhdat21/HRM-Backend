@@ -49,7 +49,7 @@ public class PerLetterUtil {
         Long currentDepartmentId = CurrentAccountDTO.getDepartmentId();
 
         // Nếu có quyền xem toàn công ty → luôn được phép
-        if (roles.contains("ROLE_WATCH_LETTER_COMPANY")) return;
+        if (roles.contains("ROLE_WATCH_LETTER_COMPANY") || roles.contains("ADMIN")) return;
 
         // Nếu đang xem chính mình → luôn được phép
         if (Objects.equals(currentEmployeeId, employeeId)) return;
@@ -59,6 +59,7 @@ public class PerLetterUtil {
             if (!Objects.equals(currentDepartmentId, targetDepartmentId)) {
                 throw new BusinessException(ErrorCode.NO_PERMISSION_DEPARTMENT_OTHER);
             }
+            return;
         }
 
         if (roles.contains("ROLE_WATCH_SELF_LETTER")) {
@@ -71,7 +72,7 @@ public class PerLetterUtil {
 
     public void checkSameDepartmentByFilter(EmployeeFilter filter) {
         if (CurrentAccountDTO.getPermission().contains("ROLE_WATCH_LETTER_DEPARTMENT")) {
-            if ((filter.getDepartment() != null &&
+            if ((!filter.getDepartment().isEmpty() &&
                     (filter.getDepartment().size() > 1 || !Objects.equals(filter.getDepartment().get(0), CurrentAccountDTO.getDepartmentId())))) {
                 throw new BusinessException(ErrorCode.NO_PERMISSION_DEPARTMENT_OTHER);
             }
@@ -86,6 +87,7 @@ public class PerLetterUtil {
     }
 
     public void checkManageOrCreateLetter(long itemId) {
+        if (CurrentAccountDTO.getPermission().contains("ADMIN")) return;
         if (itemId == 0 && !CurrentAccountDTO.getPermission().contains("ROLE_CREATE_SELF_LETTER")) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_CREATE);
         } else if (itemId != 0 && !CurrentAccountDTO.getPermission().contains("ROLE_MANAGE_SELF_LETTER")) {
@@ -99,7 +101,7 @@ public class PerLetterUtil {
         Long currentDepartmentId = CurrentAccountDTO.getDepartmentId();
 
         // Nếu có quyền xem toàn công ty → luôn được phép
-        if (roles.contains("ROLE_WATCH_LETTER_COMPANY")) return;
+        if (roles.contains("ROLE_WATCH_LETTER_COMPANY") || roles.contains("ADMIN") ) return;
 
         // Nếu đang xem chính mình → luôn được phép
         if (Objects.equals(currentEmployeeId, employeeId)){

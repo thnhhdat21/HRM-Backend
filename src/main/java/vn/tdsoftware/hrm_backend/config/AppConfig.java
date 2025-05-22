@@ -32,10 +32,12 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class AppConfig {
+//    private final String[] WHITE_LIST = {"/**"};
     private final String[] WHITE_LIST = {"/auth/**", "/file/get-file"};
-    private final String[] WHITE_ITEM_MANAGE = {"/duty/**", "/department/**", "/allowance/**", "/job-position/**", "/letter-reason/**"};
+    private final String[] WHITE_ITEM_MANAGE = {"/duty/**", "/department/**", "/allowance/**", "/job-position/**", "/letter-reason/**", "/employee/get-employee-name-code", "/employee/get-employee-job-position"};
 
-        private final String[] ROLES_WATCH_COMPANY = {"ROLE_WATCH_EMPLOYEE_COMPANY",
+    private final String[] ROLES_WATCH_COMPANY = {"ADMIN",
+        "ROLE_WATCH_EMPLOYEE_COMPANY",
         "ROLE_WATCH_CONTRACT_COMPANY",
         "ROLE_WATCH_DECISION_COMPANY",
         "ROLE_WATCH_TIMESHEET_COMPANY",
@@ -43,7 +45,8 @@ public class AppConfig {
         "ROLE_WATCH_LETTER_COMPANY",
         "ROLE_WATCH_INSURANCE_COMPANY"};
 
-    private final String[] ROLES_WATCH_DEPARTMENT = {"ROLE_WATCH_EMPLOYEE_DEPARTMENT",
+    private final String[] ROLES_WATCH_DEPARTMENT = {"ADMIN",
+            "ROLE_WATCH_EMPLOYEE_DEPARTMENT",
             "ROLE_WATCH_CONTRACT_DEPARTMENT",
             "ROLE_WATCH_DECISION_DEPARTMENT",
             "ROLE_WATCH_TIMESHEET_DEPARTMENT",
@@ -54,7 +57,7 @@ public class AppConfig {
     String[] ALL_ROLES = Stream.concat(
             Arrays.stream(ROLES_WATCH_COMPANY),
             Arrays.stream(ROLES_WATCH_DEPARTMENT)
-    ).toArray(String[]::new);
+    ).distinct().toArray(String[]::new);
 
     private final UserService userService;
 
@@ -96,7 +99,7 @@ public class AppConfig {
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(WHITE_ITEM_MANAGE).hasAnyAuthority(ALL_ROLES)
                         .requestMatchers("/contract-type/**").hasAnyAuthority("ADMIN", "ROLE_MANAGE_CONTRACT")
-                        .requestMatchers("/employee/get-list-employee").hasAnyAuthority("ADMIN", "ROLE_MANAGE_CONTRACT")
+                        .requestMatchers("/employee/get-list-employee").hasAnyAuthority("ADMIN", "ROLE_MANAGE_CONTRACT", "ROLE_MANAGE_DECISION")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(provider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);

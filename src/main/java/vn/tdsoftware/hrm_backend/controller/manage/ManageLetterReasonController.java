@@ -44,14 +44,4 @@ public class ManageLetterReasonController {
                 .message("Update letter-reason")
                 .build();
     }
-
-    @PostMapping("/get-letter-reason-detail")
-    public ResponseData<LetterReasonDetail> getLetterReasonDetail(@RequestParam("id") Long id) {
-        LetterReasonDetail response = letterReasonService.getLetterReasonDetail(id);
-        return ResponseData.<LetterReasonDetail>builder()
-                .code(1000)
-                .data(response)
-                .message("Update letter-reason")
-                .build();
-    }
 }

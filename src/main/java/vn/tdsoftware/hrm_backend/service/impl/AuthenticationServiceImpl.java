@@ -6,27 +6,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
-import vn.tdsoftware.hrm_backend.dao.PermissionDAO;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountLoginResponse;
 import vn.tdsoftware.hrm_backend.dto.auth.request.LoginRequest;
 import vn.tdsoftware.hrm_backend.dto.auth.response.TokenResponse;
+import vn.tdsoftware.hrm_backend.dto.employee.response.EmployeeResponse;
 import vn.tdsoftware.hrm_backend.entity.Account;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.repository.AccountRepository;
 import vn.tdsoftware.hrm_backend.service.AuthenticationService;
+import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.JwtService;
 import vn.tdsoftware.hrm_backend.service.TokenService;
 import vn.tdsoftware.hrm_backend.util.constant.AccountConstant;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.springframework.http.HttpHeaders.REFERER;
 import static vn.tdsoftware.hrm_backend.util.TokenType.REFRESH_TOKEN;
 import static vn.tdsoftware.hrm_backend.util.constant.RoleConstant.ADMIN;
 
@@ -35,10 +32,10 @@ import static vn.tdsoftware.hrm_backend.util.constant.RoleConstant.ADMIN;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final AccountRepository accountRepository;
+    private final EmployeeService employeeService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenService tokenService;
-    private final PermissionDAO permissionDAO;
 
     @Override
     public TokenResponse authenticate(LoginRequest loginRequest) {
@@ -60,20 +57,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Tạo accessToken và refreshToken
         String accessToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
-
-        List<String> roles = jwtService.extractRoles(accessToken);
+        Boolean isAdmin = jwtService.isAdmin(accessToken);
         List<String> permissions = new ArrayList<>();
-        if (ADMIN.equals(roles.get(0))) {
+        if (isAdmin) {
             permissions.add(ADMIN);
         } else {
             permissions = jwtService.extractPermissions(accessToken);
         }
-
         //Lưu token vào redis
         tokenService.storeTokens(account.getUsername(), accessToken, refreshToken);
 
+        EmployeeResponse employeeJob = employeeService.getJobPositionByEmployeeId(account.getEmployeeId());
+
         AccountLoginResponse accountLogin = AccountLoginResponse.builder()
                 .employeeId(account.getEmployeeId())
+                .employeeName(employeeJob.getFullName())
+                .jobPosition(employeeJob.getJobPosition())
                 .permissions(permissions)
                 .build();
 
@@ -86,7 +85,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenResponse refreshToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader(REFERER);
+        String refreshToken = request.getHeader("x-token");
         if (StringUtils.isBlank((refreshToken))){
             throw new BusinessException(ErrorCode.TOKEN_IS_EMPTY);
         }
@@ -111,7 +110,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = jwtService.generateToken(account);
 
-        tokenService.removeAccessToken(username);
         tokenService.storeAccessToken(username, accessToken);
 
         return TokenResponse.builder()
@@ -122,10 +120,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        String refreshToken = request.getHeader(REFERER);
+        String refreshToken = request.getHeader("x-token");
         if (StringUtils.isBlank((refreshToken))){
             throw new BusinessException(ErrorCode.TOKEN_IS_EMPTY);
         }
-
+        String username = jwtService.extractUsername(refreshToken, REFRESH_TOKEN);
+        tokenService.removeAllTokens(username);
     }
 }

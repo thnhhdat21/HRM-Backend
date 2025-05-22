@@ -6,5 +6,6 @@ public class FilterConstant {
     public static final int TYPE_DECISION = 3;
     public static final int TYPE_LETTER = 4;
     public static final int TYPE_INSURANCE = 5;
+    public static final int TYPE_ACCOUNT = 6;
 
 }

@@ -21,7 +21,7 @@ public class ManageContractController {
     private final ContractService contractService;
 
     @PostMapping("/get-contract-detail")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_CONTRACT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ROLE_MANAGE_CONTRACT')")
     public ResponseData<ContractDetailResponse> getContractDetail(@RequestParam("contractId") long contractId) {
         ContractDetailResponse response = contractService.getContractDetail(contractId);
         return ResponseData.<ContractDetailResponse>builder()
@@ -32,7 +32,7 @@ public class ManageContractController {
     }
 
     @PostMapping("/update-contract")
-    @PreAuthorize("hasAuthority('ROLE_MANAGE_CONTRACT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_MANAGE_CONTRACT')")
     public ResponseData<Void> updateContract(@RequestBody ContractRequest contractRequest) {
         contractService.updateContract(contractRequest);
         return ResponseData.<Void>builder()
@@ -42,7 +42,7 @@ public class ManageContractController {
     }
 
     @PostMapping("/create-contract")
-    @PreAuthorize("hasAuthority('ROLE_CREATE_CONTRACT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_CREATE_CONTRACT')")
     public ResponseData<Void> createContract(@RequestBody ContractRequest contractRequest) {
         contractService.createContract(contractRequest);
         return ResponseData.<Void>builder()
@@ -62,8 +62,19 @@ public class ManageContractController {
                 .build();
     }
 
+    @PostMapping("/get-count-contract")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT', 'ADMIN')")
+    public ResponseData<Integer> getCountContract(@RequestBody EmployeeFilter filter) {
+        Integer responses = contractService.getCountContract(filter);
+        return ResponseData.<Integer>builder()
+                .code(1000)
+                .data(responses)
+                .message("Get list contract successfully")
+                .build();
+    }
+
     @PostMapping("/get-count-contract-type")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
     public ResponseData<List<CountContractTypeResponse>> getCountContractType(@RequestBody EmployeeFilter filter) {
         List<CountContractTypeResponse> response = contractService.getCountContractType(filter);
         return ResponseData.<List<CountContractTypeResponse>>builder()
@@ -74,7 +85,7 @@ public class ManageContractController {
     }
 
     @PostMapping("/end-contract")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_CONTRACT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_MANAGE_CONTRACT')")
     public ResponseData<Void> endContract(@RequestBody EndContractRequest request) {
         contractService.endContract(request);
         return ResponseData.<Void>builder()
@@ -84,7 +95,7 @@ public class ManageContractController {
     }
 
     @PostMapping("/count-contract-appendix")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_CONTRACT_COMPANY', 'ROLE_WATCH_CONTRACT_DEPARTMENT')")
     public ResponseData<Integer> countContractAppendix(@RequestParam long contractId) {
         int count = contractService.countContractAppendix(contractId);
         return ResponseData.<Integer>builder()
@@ -93,5 +104,4 @@ public class ManageContractController {
                 .message("end contract successfully")
                 .build();
     }
-
 }

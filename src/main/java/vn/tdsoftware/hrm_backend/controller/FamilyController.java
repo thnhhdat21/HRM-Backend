@@ -19,7 +19,7 @@ public class FamilyController {
     @PostMapping("/get-family-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                 "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<List<FamilyResponse>> getFamilyOfEmployee(@RequestParam("employeeId") long employeeId) {
         List<FamilyResponse> response = familyService.getFamilyOfEmployee(employeeId);
         return ResponseData.<List<FamilyResponse>>builder()
@@ -31,7 +31,7 @@ public class FamilyController {
 
     @PostMapping("/update-family-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
-                                "'ROLE_MANAGE_SELF_EMPLOYEE')")
+                                "'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateFamilyOfEmployee(@RequestBody List<FamilyRequest> requests) {
         familyService.updateFamilyOfEmployee(requests);
         return ResponseData.<Void>builder()

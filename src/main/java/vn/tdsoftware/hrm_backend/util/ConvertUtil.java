@@ -6,8 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConvertUtil {
-    public static List<Integer> permissionsDefault = new ArrayList<>(Arrays.asList(1, 2, 3));
-    public static List<Integer> permissionsAdmin = new ArrayList<>(Arrays.asList(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29));
+    public static List<Integer> permissionsDefault = new ArrayList<>(Arrays.asList(2, 5, 7, 11, 16, 27, 30, 31));
 
     public static List<Integer> permissionValidator(String permissions) {
         List<Integer> listPermission = new ArrayList<>();

@@ -18,7 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.entity.Account;
+import vn.tdsoftware.hrm_backend.entity.Role;
+import vn.tdsoftware.hrm_backend.entity.RoleHasPermission;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
+import vn.tdsoftware.hrm_backend.repository.RoleRepository;
 import vn.tdsoftware.hrm_backend.service.JwtService;
 import vn.tdsoftware.hrm_backend.service.TokenService;
 import vn.tdsoftware.hrm_backend.service.UserService;
@@ -39,6 +42,7 @@ public class PreFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final JwtService jwtService;
     private final TokenService tokenService;
+    private final RoleRepository roleRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -59,9 +63,9 @@ public class PreFilter extends OncePerRequestFilter {
             }
 
             final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
-            List<String> roles = jwtService.extractRoles(token);
+            Boolean isAdmin = jwtService.isAdmin(token);
             List<String> permissions = new ArrayList<>();
-            if (ADMIN.equals(roles.get(0))) {
+            if (isAdmin) {
                 permissions.add(ADMIN);
             } else {
                 permissions = jwtService.extractPermissions(token);
@@ -91,7 +95,7 @@ public class PreFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             log.warn("Token đã hết hạn!");
-            response.setStatus(HttpServletResponse.SC_OK); // 401
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.setContentType("application/json");
             response.getWriter().write("{\"code\": " + ErrorCode.TOKEN_EXPIRED.getCode() + ",\n\"error\": \"Token expired\"}");
         }

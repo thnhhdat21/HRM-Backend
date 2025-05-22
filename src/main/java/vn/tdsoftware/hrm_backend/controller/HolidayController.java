@@ -19,7 +19,7 @@ public class HolidayController {
     private final HolidayService holidayService;
 
     @PostMapping("/get-list-holiday")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_TIMESHEET')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_MANAGE_TIMESHEET', 'ROLE_WATCH_TIMESHEET_COMPANY', 'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     ResponseData<List<HolidayResponse>> getListHoliday(@RequestBody HolidayFilter filter) {
         List<HolidayResponse> responses = holidayService.getListHoliday(filter);
         return ResponseData.<List<HolidayResponse>>builder()
@@ -31,7 +31,7 @@ public class HolidayController {
 
 
     @PostMapping("/update-holiday")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_TIMESHEET')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_MANAGE_TIMESHEET')")
     ResponseData<HolidayResponse> updateHoliday(@RequestBody HolidayRequest request) {
         HolidayResponse responses = holidayService.updateHoliday(request);
         return ResponseData.<HolidayResponse>builder()
@@ -43,7 +43,7 @@ public class HolidayController {
     }
 
     @PostMapping("/delete-holiday")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_TIMESHEET')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_MANAGE_TIMESHEET')")
     ResponseData<Void> updateHoliday(@RequestParam long holidayId) {
         holidayService.deleteHoliday(holidayId);
         return ResponseData.<Void>builder()

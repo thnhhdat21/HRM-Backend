@@ -19,7 +19,7 @@ public class EducationController {
     @PostMapping("/get-education-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<List<EducationResponse>> getEducationProfile(@RequestParam("employeeId") long employeeId) {
         List<EducationResponse> response = educationService.getEducationProfile(employeeId);
         return ResponseData.<List<EducationResponse>>builder()
@@ -31,7 +31,7 @@ public class EducationController {
 
     @PostMapping("/update-education-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
-                                    "'ROLE_MANAGE_SELF_EMPLOYEE')")
+                                    "'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateEducationProfile(@RequestBody List<EducationRequest> requests) {
         educationService.updateEducationProfile(requests);
         return ResponseData.<Void>builder()

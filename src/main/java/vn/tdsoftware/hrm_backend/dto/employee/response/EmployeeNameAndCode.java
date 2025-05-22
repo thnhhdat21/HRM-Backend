@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmployeeSelect {
-    private long id;
-    private String name;
-    private String code;
+public class EmployeeNameAndCode {
+    private long employeeId;
+    private String employeeName;
+    private String employeeCode;
 }

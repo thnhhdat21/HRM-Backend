@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
-import vn.tdsoftware.hrm_backend.dto.account.response.AccountCountResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
+import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.service.AccountService;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class ManageAccountController {
     private final AccountService accountService;
 
     @PostMapping("/get-list-account")
-    private ResponseData<List<AccountResponse>> getListAccount(@RequestParam("type") int type) {
-        List<AccountResponse> response = accountService.getListAccount(type);
+    private ResponseData<List<AccountResponse>> getListAccount(@RequestBody EmployeeFilter filter) {
+        List<AccountResponse> response = accountService.getListAccount(filter);
         return ResponseData.<List<AccountResponse>>builder()
                 .code(1000)
                 .data(response)
@@ -27,10 +28,20 @@ public class ManageAccountController {
                 .build();
     }
 
+    @PostMapping("/get-count-account-type")
+    private ResponseData<AccountTypeResponse> getCountAccountType(@RequestBody EmployeeFilter filter) {
+        AccountTypeResponse response = accountService.getAccountCountType(filter);
+        return ResponseData.<AccountTypeResponse>builder()
+                .code(1000)
+                .data(response)
+                .message("Get count account successfully")
+                .build();
+    }
+
     @PostMapping("/get-count-account")
-    private ResponseData<AccountCountResponse> getCountAccount() {
-        AccountCountResponse response = accountService.getAccountCount();
-        return ResponseData.<AccountCountResponse>builder()
+    private ResponseData<Integer> getCountAccount(@RequestBody EmployeeFilter filter) {
+        int response = accountService.getAccountCount(filter);
+        return ResponseData.<Integer>builder()
                 .code(1000)
                 .data(response)
                 .message("Get count account successfully")

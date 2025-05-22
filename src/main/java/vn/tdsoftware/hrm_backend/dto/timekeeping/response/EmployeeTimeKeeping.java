@@ -1,9 +1,6 @@
 package vn.tdsoftware.hrm_backend.dto.timekeeping.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +9,8 @@ import java.time.LocalTime;
 @Setter
 @Builder
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeTimeKeeping {
     private long employeeId;
     private String employeeCode;

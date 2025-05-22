@@ -29,4 +29,16 @@ public class PermissionDAOImpl extends AbstractDao<Permission> implements Permis
             }
         });
     }
+
+    @Override
+    public void deleteAllById(int id) {
+        String sql = "UPDATE RoleHasPermission e SET e.isEnabled = false WHERE e.roleId = ?";
+        update(sql, id);
+    }
+
+    @Override
+    public void deleteCustomById(int id) {
+        String sql = "UPDATE RoleHasPermission e INNER JOIN Permission p ON e.permissionId = p.id SET e.isEnabled = false WHERE e.roleId = ? and p.groupPer != 'default'";
+        update(sql, id);
+    }
 }

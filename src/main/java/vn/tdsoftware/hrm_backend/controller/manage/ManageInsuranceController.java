@@ -21,7 +21,7 @@ public class ManageInsuranceController {
     private final InsuranceService insuranceService;
 
     @PostMapping("/get-list-insurance")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_INSURANCE_COMPANY', 'ROLE_WATCH_INSURANCE_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_INSURANCE_COMPANY', 'ROLE_WATCH_INSURANCE_DEPARTMENT')")
     ResponseData<List<InsuranceResponse>> getListInsurance(@RequestBody EmployeeFilter filter) {
         List<InsuranceResponse> responses = insuranceService.getListInsurance(filter);
         return ResponseData.<List<InsuranceResponse>>builder()
@@ -32,7 +32,7 @@ public class ManageInsuranceController {
     }
 
     @PostMapping("/count-insurance")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_INSURANCE_COMPANY', 'ROLE_WATCH_INSURANCE_DEPARTMENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_INSURANCE_COMPANY', 'ROLE_WATCH_INSURANCE_DEPARTMENT')")
     ResponseData<Integer> getCountInsurance(@RequestBody EmployeeFilter filter) {
         int responses = insuranceService.getCountInsurance(filter);
         return ResponseData.<Integer>builder()

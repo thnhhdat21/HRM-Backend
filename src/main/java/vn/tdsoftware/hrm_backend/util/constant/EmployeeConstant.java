@@ -5,4 +5,6 @@ public class EmployeeConstant {
     public static final int EMPLOYEE_STATUS_LEAVE_TMP = 2;
     public static final int EMPLOYEE_STATUS_QUIT = 3;
 
+    public static final int EMPLOYEE_TYPE_TRIAL = 1;
+    public static final int EMPLOYEE_TYPE_WORKING = 2;
 }

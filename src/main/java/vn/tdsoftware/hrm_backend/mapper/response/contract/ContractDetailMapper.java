@@ -18,6 +18,7 @@ public class ContractDetailMapper implements RowMapper<ContractDetailResponse> {
             if (resultSet.next()) {
                 ContractDetailResponse contractDetailResponse = ContractDetailResponse.builder()
                         .contractId(resultSet.getLong("contractId"))
+                        .employeeId(resultSet.getLong("employeeId"))
                         .contractCode(resultSet.getString("contractCode"))
                         .employeeName(resultSet.getString("employeeName"))
                         .employeeCode(resultSet.getString("employeeCode"))

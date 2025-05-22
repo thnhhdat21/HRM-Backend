@@ -14,6 +14,7 @@ import vn.tdsoftware.hrm_backend.dao.RoleDAO;
 import vn.tdsoftware.hrm_backend.entity.Account;
 import vn.tdsoftware.hrm_backend.entity.ContractGeneral;
 import vn.tdsoftware.hrm_backend.repository.ContractGeneralRepository;
+import vn.tdsoftware.hrm_backend.repository.RoleRepository;
 import vn.tdsoftware.hrm_backend.service.JwtService;
 import vn.tdsoftware.hrm_backend.util.TokenType;
 
@@ -41,6 +42,8 @@ public class JwtServiceImpl implements JwtService {
     private String refreshKey;
 
     private final RoleDAO roleDAO;
+
+    private final RoleRepository roleRepository;
 
     private final PermissionDAO permissionDAO;
 
@@ -73,6 +76,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public Boolean isAdmin(String token) {
+        return extractIsAdmin(token);
+    }
+
+    @Override
     public Long extractDepartment(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getKey(ACCESS_TOKEN))
@@ -100,15 +108,17 @@ public class JwtServiceImpl implements JwtService {
 
     private String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         List<String> roleNames = roleDAO.getRoleByUsername(userDetails.getUsername());
+        List<Boolean> isAdmin = roleDAO.isRoleAdminByUsername(userDetails.getUsername());
         Optional<ContractGeneral> contractGeneral = contractGeneralRepository.findByEmployeeId(((Account) userDetails).getEmployeeId());
         contractGeneral.ifPresent(general -> claims.put("departmentId", general.getDepartmentId()));
         claims.put("roles", roleNames);
+        claims.put("isAdmin", isAdmin.get(0));
         claims.put("employeeId",((Account) userDetails).getEmployeeId());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *  60 * expiryTime))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiryTime ))
                 .signWith(getKey(ACCESS_TOKEN),SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -159,5 +169,14 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.get("roles", List.class);
+    }
+
+    private Boolean extractIsAdmin(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getKey(ACCESS_TOKEN))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("isAdmin", Boolean.class);
     }
 }

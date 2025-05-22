@@ -11,6 +11,7 @@ public interface JwtService {
     String extractUsername(String token, TokenType type);
     List<String> extractPermissions(String token);
     List<String> extractRoles(String token);
+    Boolean isAdmin(String token);
     Long extractDepartment(String token);
     Long extractEmployeeId(String token);
     boolean isValid(String token, TokenType type, UserDetails user);

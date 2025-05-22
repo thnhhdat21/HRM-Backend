@@ -22,6 +22,6 @@ public class Permission extends BaseEntity<Integer> implements Serializable {
     @Column(name = "description", length = 500, columnDefinition = "varchar(500)")
     private String description;
 
-    @Column(name = "parentId")
-    private Integer parentId;
+    @Column(name = "groupPer")
+    private String groupPer;
 }

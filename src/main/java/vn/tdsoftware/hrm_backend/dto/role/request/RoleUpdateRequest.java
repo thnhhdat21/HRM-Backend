@@ -3,6 +3,8 @@ package vn.tdsoftware.hrm_backend.dto.role.request;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class RoleUpdateRequest {
@@ -10,5 +12,6 @@ public class RoleUpdateRequest {
     private String name;
     private String code;
     private String desc;
-    private String permissions;
+    private String role;
+    private List<PermissionRequest> permissions;
 }

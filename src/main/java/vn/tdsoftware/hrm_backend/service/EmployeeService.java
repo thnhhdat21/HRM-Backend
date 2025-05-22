@@ -18,7 +18,7 @@ public interface EmployeeService {
     void updateResumeProfile(ResumeProfileRequest request);
     void updateIdentityCard(IdentityCartRequest request);
     Employee checkEmployeeValidator(long id);
-    List<EmployeeSelectResponse> getListEmployee();
+    List<EmployeeNameAndCode> getListEmployee();
     EmployeeTimeSheetResponse getTimeSheetEmployee(EmployeeTimeSheetRequest request);
     void employeeCheckin(long employeeId);
     void employeeCheckout(long employeeId);
@@ -31,5 +31,7 @@ public interface EmployeeService {
     List<SalaryMonth> getListSalaryEmployee(long employeeId, String year);
     SalaryDetailResponse getSalaryDetailEmployee(long salaryDetailId);
     SalaryAllowanceEmployee getSalaryAllowanceEmployee(long employeeId);
+    EmployeeNameAndCode getEmployeeNameCode(long employeeId);
+    EmployeeResponse getJobPositionByEmployeeId(long employeeId);
 }
 

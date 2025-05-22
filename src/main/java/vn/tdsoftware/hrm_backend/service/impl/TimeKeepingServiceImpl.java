@@ -17,7 +17,6 @@ import vn.tdsoftware.hrm_backend.repository.TimeKeepingRepository;
 import vn.tdsoftware.hrm_backend.repository.TimeSheetRepository;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
 import vn.tdsoftware.hrm_backend.service.TimeKeepingService;
-import vn.tdsoftware.hrm_backend.util.PerSalaryUtil;
 import vn.tdsoftware.hrm_backend.util.PerTimeSheetUtil;
 
 import java.time.LocalDate;
@@ -39,55 +38,64 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
         perTimeSheetUtil.checkSameDepartmentByFilter(filter);
         YearMonth yearMonth = YearMonth.from(filter.getYearMonth());
         LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
+        LocalDate endDate = yearMonth.equals(YearMonth.from(LocalDate.now()))
+                ? LocalDate.now()
+                : yearMonth.atEndOfMonth();
         List<EmployeeTimeKeeping> list = timeKeepingDAO.getListTimeKeeping(filter, startDate, endDate);
         if (list.isEmpty()) {
             throw new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY);
         }
         Set<String> employeeCodes = new HashSet<>();
         int index = 0;
-        LocalDate nextDay = null;
-        EmployeeTimeKeepingResponse employeeTimeKeepingResponse = null;
+        LocalDate nextDay = startDate;
+        EmployeeTimeKeepingResponse employeeTimeKeepingResponse = new EmployeeTimeKeepingResponse();
         List<EmployeeTimeKeepingResponse> responseList = new ArrayList<>();
-        while (index < list.size()) {
-            EmployeeTimeKeeping employeeTimeKeeping = list.get(index);
-            if (!employeeCodes.contains(employeeTimeKeeping.getEmployeeCode())) {
-                employeeCodes.add(employeeTimeKeeping.getEmployeeCode());
-
-                employeeTimeKeepingResponse = new EmployeeTimeKeepingResponse();
-                employeeTimeKeepingResponse.setEmployeeId(employeeTimeKeeping.getEmployeeId());
-                employeeTimeKeepingResponse.setEmployeeCode(employeeTimeKeeping.getEmployeeCode());
-                employeeTimeKeepingResponse.setEmployeeName(employeeTimeKeeping.getEmployeeName());
-                employeeTimeKeepingResponse.setDepartment(employeeTimeKeeping.getDepartment());
-                employeeTimeKeepingResponse.setJobPosition(employeeTimeKeeping.getJobPosition());
-                employeeTimeKeepingResponse.setOnLeaveTotal(employeeTimeKeeping.getOnLeaveTotal());
-                employeeTimeKeepingResponse.setOnLeaveUsed(employeeTimeKeeping.getOnLeaveUsed());
-                employeeTimeKeepingResponse.setOverTimeTotal(employeeTimeKeeping.getOverTimeTotal());
-                List<TimeKeepingResponse> timeKeepingResponseList = new ArrayList<>();
-                employeeTimeKeepingResponse.setTimeKeeping(timeKeepingResponseList);
-                responseList.add(employeeTimeKeepingResponse);
-                nextDay = startDate;
-            }
-            if (employeeTimeKeeping.getDateWorking() != null) {
-                while(!nextDay.isAfter(employeeTimeKeeping.getDateWorking())) {
-                    if (nextDay.equals(employeeTimeKeeping.getDateWorking())) {
-                        employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
-                                .dateWorking(employeeTimeKeeping.getDateWorking())
-                                .workDay(employeeTimeKeeping.getWorkDay())
-                                .symbolLetter(employeeTimeKeeping.getSymbolLetter())
-                                .isLate(employeeTimeKeeping.isLate())
-                                .build());
-                        employeeTimeKeepingResponse.setTotalWorkDay(employeeTimeKeepingResponse.getTotalWorkDay() + employeeTimeKeeping.getWorkDay());
-                        if(employeeTimeKeeping.isLate())
-                            employeeTimeKeepingResponse.setTotalLateDay(employeeTimeKeepingResponse.getTotalLateDay() + 1);
-                    } else {
-                        employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
-                                .dateWorking(nextDay)
-                                .workDay(0)
-                                .build());
-                    }
-                    nextDay = nextDay.plusDays(1);
+        while (index < list.size() || !nextDay.isAfter(endDate)) {
+            EmployeeTimeKeeping employeeTimeKeeping = new EmployeeTimeKeeping();
+            if (index < list.size()) {
+                employeeTimeKeeping = list.get(index);
+                if (!employeeCodes.contains(employeeTimeKeeping.getEmployeeCode())) {
+                    employeeCodes.add(employeeTimeKeeping.getEmployeeCode());
+                    employeeTimeKeepingResponse = new EmployeeTimeKeepingResponse();
+                    employeeTimeKeepingResponse.setEmployeeId(employeeTimeKeeping.getEmployeeId());
+                    employeeTimeKeepingResponse.setEmployeeCode(employeeTimeKeeping.getEmployeeCode());
+                    employeeTimeKeepingResponse.setEmployeeName(employeeTimeKeeping.getEmployeeName());
+                    employeeTimeKeepingResponse.setDepartment(employeeTimeKeeping.getDepartment());
+                    employeeTimeKeepingResponse.setJobPosition(employeeTimeKeeping.getJobPosition());
+                    employeeTimeKeepingResponse.setOnLeaveTotal(employeeTimeKeeping.getOnLeaveTotal());
+                    employeeTimeKeepingResponse.setOnLeaveUsed(employeeTimeKeeping.getOnLeaveUsed());
+                    employeeTimeKeepingResponse.setOverTimeTotal(employeeTimeKeeping.getOverTimeTotal());
+                    List<TimeKeepingResponse> timeKeepingResponseList = new ArrayList<>();
+                    employeeTimeKeepingResponse.setTimeKeeping(timeKeepingResponseList);
+                    responseList.add(employeeTimeKeepingResponse);
+                    nextDay = startDate;
                 }
+            }
+
+            while(!nextDay.isAfter(endDate)) {
+                if (nextDay.equals(employeeTimeKeeping.getDateWorking())) {
+                    employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
+                            .dateWorking(employeeTimeKeeping.getDateWorking())
+                            .workDay(employeeTimeKeeping.getWorkDay())
+                            .symbolLetter(employeeTimeKeeping.getSymbolLetter())
+                            .isLate(employeeTimeKeeping.isLate())
+                            .build());
+                    employeeTimeKeepingResponse.setTotalWorkDay(employeeTimeKeepingResponse.getTotalWorkDay() + employeeTimeKeeping.getWorkDay());
+                    if(employeeTimeKeeping.isLate())
+                        employeeTimeKeepingResponse.setTotalLateDay(employeeTimeKeepingResponse.getTotalLateDay() + 1);
+
+                    if (index + 1 < list.size() && Objects.equals(employeeTimeKeeping.getEmployeeCode(), list.get(index + 1).getEmployeeCode())) {
+                        nextDay = nextDay.plusDays(1);
+                        break;
+                    }
+
+                } else {
+                    employeeTimeKeepingResponse.getTimeKeeping().add(TimeKeepingResponse.builder()
+                            .dateWorking(nextDay)
+                            .workDay(0)
+                            .build());
+                }
+                nextDay = nextDay.plusDays(1);
             }
             index++;
         }
@@ -121,8 +129,7 @@ public class TimeKeepingServiceImpl implements TimeKeepingService {
             if(!timeKeepingRepository.existsByEmployeeIdAndDate(request.getEmployeeId(), request.getWorkingDay()))
                 throw new BusinessException(ErrorCode.WORKING_DAY_LEAVE);
         }
-        WorkingDayResponse response = timeKeepingDAO.getWorkingDay(request);
-        return response;
+        return timeKeepingDAO.getWorkingDay(request);
     }
 
 }

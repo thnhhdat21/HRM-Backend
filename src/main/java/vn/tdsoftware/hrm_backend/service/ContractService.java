@@ -24,4 +24,5 @@ public interface ContractService {
     int countContractAppendix(long contractId);
     void expireContract(long contractId, boolean contractDisabled);
     void activeContract(long employeeId, Contract contract);
+    int getCountContract(EmployeeFilter filter);
 }

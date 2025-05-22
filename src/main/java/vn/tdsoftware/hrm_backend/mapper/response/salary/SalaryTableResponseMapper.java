@@ -18,7 +18,7 @@ public class SalaryTableResponseMapper implements RowMapper<SalaryTableResponse>
                     .status(resultSet.getInt("status"))
                     .numberEmployee(resultSet.getInt("numberEmployee"))
                     .totalAmount(resultSet.getLong("totalAmount"))
-                    .createdAt(resultSet.getDate("createAt"))
+                    .createdAt(resultSet.getDate("createdAt"))
                     .build();
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SQL_MAPPER_ERROR);

@@ -19,11 +19,12 @@ public interface EmployeeDAO {
     List<EmployeeResponse> getListEmployeeFilter(EmployeeFilter filter);
     List<EmployeeTypeCount> getCountEmployeeFilter(EmployeeFilter filter);
     ResumeProfileResponse getResumeProfile(Long id);
-    List<EmployeeSelectResponse> getListEmployee();
+    List<EmployeeNameAndCode> getListEmployee();
     List<EmployeeTimeSheet> getTimeSheetEmployee(long employeeId, LocalDate dateStart, LocalDate dateEnd);
     List<LeaveLetterResponse> getListLeaveLetter(long employeeId, YearMonth yearMonth);
     List<OverTimeLetterResponse> getListOverTimeLetter(long employeeId, YearMonth yearMonth);
     List<SalaryMonth> getListSalaryEmployee(long employeeId, String year);
     SalaryDetailResponse getSalaryDetailEmployee(long salaryDetailId);
     SalaryAllowanceEmployee getSalaryAllowanceEmployee(long employeeId);
+    EmployeeResponse getJobPositionByEmployeeId(long employeeId);
 }

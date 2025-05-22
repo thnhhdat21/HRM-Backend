@@ -9,9 +9,11 @@ import vn.tdsoftware.hrm_backend.common.service.EmailService;
 import vn.tdsoftware.hrm_backend.common.thread.SendMailThread;
 import vn.tdsoftware.hrm_backend.dao.AccountDAO;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
-import vn.tdsoftware.hrm_backend.dto.account.response.AccountCountResponse;
+import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeCount;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
+import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeResponse;
+import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.entity.*;
 import vn.tdsoftware.hrm_backend.enums.ErrorCode;
 import vn.tdsoftware.hrm_backend.repository.AccountRepository;
@@ -24,6 +26,8 @@ import vn.tdsoftware.hrm_backend.util.constant.AccountConstant;
 import java.util.Date;
 import java.util.List;
 
+import static vn.tdsoftware.hrm_backend.util.constant.AccountConstant.*;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -34,11 +38,8 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<AccountResponse> getListAccount(int type) {
-        if (type > 3 || type < 1) {
-            throw new BusinessException(ErrorCode.TYPE_ACCOUNT_NOT_EXIST);
-        }
-        List<AccountResponse> accountResponses = accountDAO.getListAccount(type);
+    public List<AccountResponse> getListAccount(EmployeeFilter filter) {
+        List<AccountResponse> accountResponses = accountDAO.getListAccount(filter);
         if (accountResponses.isEmpty()) {
             throw new BusinessException(ErrorCode.LIST_ACCOUNT_IS_EMPTY);
         }
@@ -46,8 +47,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountCountResponse getAccountCount() {
-        return accountDAO.getAccountCount();
+    public AccountTypeResponse getAccountCountType(EmployeeFilter filter) {
+        List<AccountTypeCount> counts =  accountDAO.getAccountCountType(filter);
+        AccountTypeResponse response = new AccountTypeResponse(0,0,0);
+        for (AccountTypeCount count : counts)  {
+            switch (count.getStatusId()) {
+                case ACCOUNT_ACTIVE -> response.setAccountActive(count.getCount());
+                case ACCOUNT_NOT_ACTIVE -> response.setAccountNotActive(count.getCount());
+                case ACCOUNT_LOCK -> response.setAccountLock(count.getCount());
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public int getAccountCount(EmployeeFilter filter) {
+        return accountDAO.getCountAccount(filter);
     }
 
     @Override
@@ -100,9 +115,9 @@ public class AccountServiceImpl implements AccountService {
         }
         FieldStringUtil.validatorPass(request.getPassword());
 
-        Thread sendEmailThread = new Thread(new SendMailThread(emailService, employee.getEmail(), account.getUsername(), account.getPassword()));
+        Thread sendEmailThread = new Thread(new SendMailThread(emailService, employee.getEmail(), account.getUsername(), request.getPassword()));
         sendEmailThread.start();
-        account.setStatus(AccountConstant.ACCOUNT_ACTIVE);
+        account.setStatus(ACCOUNT_ACTIVE);
         account.setActiveAt(new Date());
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         accountRepository.save(account);

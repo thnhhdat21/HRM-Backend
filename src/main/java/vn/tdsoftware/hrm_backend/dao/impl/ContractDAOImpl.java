@@ -150,7 +150,8 @@ public class ContractDAOImpl extends AbstractDao<Work> implements ContractDAO {
         String sql = "select   " +
                 "contract.id as contractId, " +
                 "contract.code as contractCode," +
-                "contract.parent,  " +
+                "contract.parent," +
+                "employee.id as employeeId,  " +
                 "employee.fullName as employeeName, " +
                 "employee.employeeCode as employeeCode, " +
                 "contract.type as contractType,   " +
@@ -237,7 +238,7 @@ public class ContractDAOImpl extends AbstractDao<Work> implements ContractDAO {
         sql.append(SQLUtil.sqlFilter(filter, FilterConstant.TYPE_CONTRACT));
         int index = filter.getPageIndex() == 0 ? 1 : filter.getPageIndex();
         sql.append(" ) AS contractList " +
-                "  WHERE contractList.RowNumber BETWEEN ").append((index -1)*10).append(" AND ").append((index -1)*10 + 10);
+                "  WHERE contractList.RowNumber BETWEEN ").append((index-1) * 12 + 1).append(" AND ").append((index)*12);
         return query(sql.toString(), new ContractResponseMapper());
     }
 
@@ -267,6 +268,21 @@ public class ContractDAOImpl extends AbstractDao<Work> implements ContractDAO {
         sql.append(SQLUtil.sqlFilter(filter, FilterConstant.TYPE_CONTRACT));
         sql.append(" group by contractType.id , contractType.name) countList on contractType.id = countList.id");
         return query(sql.toString(), new CountContractTypeMapper());
+    }
+
+    @Override
+    public int getCountContract(EmployeeFilter filter) {
+        StringBuilder sql = new StringBuilder(
+                        "SELECT count(contract.id)" +
+                        "from contract " +
+                        "left join employee ec on contract.createdBy = ec.id " +
+                        "left join employee on contract.employeeId = employee.id " +
+                        "left join department on contract.departmentId = department.id " +
+                        "left join contractType on contract.type = contractType.id " +
+                        "where contract.isEnabled = true " +
+                        "and contract.parent is null  ");
+        sql.append(SQLUtil.sqlFilter(filter, FilterConstant.TYPE_CONTRACT));
+        return count(sql.toString());
     }
 
 }

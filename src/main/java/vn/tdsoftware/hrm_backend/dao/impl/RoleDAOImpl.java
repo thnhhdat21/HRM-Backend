@@ -74,4 +74,21 @@ public class RoleDAOImpl extends AbstractDao<Role> implements RoleDAO {
             }
         });
     }
+
+    @Override
+    public List<Boolean> isRoleAdminByUsername(String username) {
+        String sql = "select role.accountAdmin " +
+                " from account " +
+                " inner join contractgeneral on account.employeeId = contractGeneral.employeeId " +
+                " inner join jobposition on contractGeneral.jobPositionId = jobPosition.id " +
+                " inner join role on jobPosition.roleId = role.id " +
+                "where account.username = '" + username + "'";
+        return query(sql, resultSet -> {
+            try {
+                return resultSet.getBoolean("accountAdmin");
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.SQL_MAPPER_ERROR);
+            }
+        });
+    }
 }

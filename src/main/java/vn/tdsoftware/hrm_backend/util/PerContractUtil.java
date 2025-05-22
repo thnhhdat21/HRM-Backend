@@ -24,7 +24,7 @@ public class PerContractUtil {
 
     public void checkSameDepartmentByFilter(EmployeeFilter filter) {
         if (CurrentAccountDTO.getPermission().contains("ROLE_WATCH_CONTRACT_DEPARTMENT")) {
-            if ((filter.getDepartment() != null &&
+            if ((!filter.getDepartment().isEmpty() &&
                     (filter.getDepartment().size() > 1 || !Objects.equals(filter.getDepartment().get(0), CurrentAccountDTO.getDepartmentId())))) {
                 throw new BusinessException(ErrorCode.NO_PERMISSION_DEPARTMENT_OTHER);
             }
@@ -56,7 +56,7 @@ public class PerContractUtil {
         Long currentDepartmentId = CurrentAccountDTO.getDepartmentId();
 
         // Nếu có quyền xem toàn công ty → luôn được phép
-        if (roles.contains("ROLE_WATCH_CONTRACT_COMPANY")) return;
+        if (roles.contains("ROLE_WATCH_CONTRACT_COMPANY") || roles.contains("ADMIN")) return;
 
         // Nếu đang xem chính mình → luôn được phép
         if (Objects.equals(currentEmployeeId, employeeId)) return;

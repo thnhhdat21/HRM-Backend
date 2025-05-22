@@ -424,6 +424,11 @@ public class ContractServiceImpl implements ContractService {
         }
     }
 
+    @Override
+    public int getCountContract(EmployeeFilter filter) {
+        return contractDAO.getCountContract(filter);
+    }
+
     private void checkEmployeeValidator(long employeeId) {
         employeeRepository.findByIdAndIsEnabled(employeeId, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY)

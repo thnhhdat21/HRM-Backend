@@ -108,7 +108,7 @@ public class TimeKeepingDAOImpl extends AbstractDao<TimeKeeping> implements Time
                 request.getWorkingDay() + "' and timeKeeping.isEnabled = true " +
                 "GROUP BY timeKeeping.employeeId, timeIn, timeOut, timeLate, timeEarly,timeKeeping.isLate, timeKeeping.workDay ";
         List<WorkingDayResponse> response = query(sql, new WorkingDayResponseMapper(), request.getEmployeeId());
-        return response.get(0);
+        return response.isEmpty() ? new WorkingDayResponse(): response.get(0);
     }
 
     @Override

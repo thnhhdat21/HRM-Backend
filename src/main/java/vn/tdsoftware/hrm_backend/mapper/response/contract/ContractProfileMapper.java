@@ -24,6 +24,7 @@ public class ContractProfileMapper implements RowMapper<ContractProfileResponse>
                         .employeeCode(resultSet.getString("employeeCode"))
                         .contractType(resultSet.getString("contractType"))
                         .state(resultSet.getInt("contractState"))
+                        .status(resultSet.getInt("contractStatus"))
                         .department(resultSet.getString("department"))
                         .jobPosition(resultSet.getString("jobPosition"))
                         .duty(resultSet.getString("duty"))

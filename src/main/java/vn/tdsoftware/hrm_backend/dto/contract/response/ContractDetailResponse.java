@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 public class ContractDetailResponse {
+    private Long employeeId;
     private String employeeName;
     private String employeeCode;
     private String contractCode;

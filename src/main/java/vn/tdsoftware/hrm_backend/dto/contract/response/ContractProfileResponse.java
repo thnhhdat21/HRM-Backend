@@ -29,6 +29,7 @@ public class ContractProfileResponse {
     private Integer contractStatus;
     private int salaryGross;
     private int state;
+    private int status;
     private Long parent;
     private String description;
     private List<AllowanceResponse> allowances;

@@ -24,7 +24,7 @@ public class PerDecisionUtil {
 
     public void checkSameDepartmentByFilter(EmployeeFilter filter) {
         if (CurrentAccountDTO.getPermission().contains("ROLE_WATCH_DECISION_DEPARTMENT")) {
-            if ((filter.getDepartment() != null &&
+            if ((!filter.getDepartment().isEmpty() &&
                     (filter.getDepartment().size() > 1 || !Objects.equals(filter.getDepartment().get(0), CurrentAccountDTO.getDepartmentId())))) {
                 throw new BusinessException(ErrorCode.NO_PERMISSION_DEPARTMENT_OTHER);
             }
@@ -43,6 +43,7 @@ public class PerDecisionUtil {
     }
 
     public void checkManageOrCreateEmployee(long itemId) {
+        if (CurrentAccountDTO.getPermission().contains("ADMIN")) return;
         if (itemId == 0 && !CurrentAccountDTO.getPermission().contains("ROLE_CREATE_DECISION")) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_CREATE);
         } else if (itemId != 0 && !CurrentAccountDTO.getPermission().contains("ROLE_MANAGE_DECISION")) {
@@ -56,7 +57,7 @@ public class PerDecisionUtil {
         Long currentDepartmentId = CurrentAccountDTO.getDepartmentId();
 
         // Nếu có quyền xem toàn công ty → luôn được phép
-        if (roles.contains("ROLE_WATCH_DECISION_COMPANY")) return;
+        if (roles.contains("ROLE_WATCH_DECISION_COMPANY") || roles.contains("ADMIN")) return;
 
         // Nếu đang xem chính mình → luôn được phép
         if (Objects.equals(currentEmployeeId, employeeId)) return;

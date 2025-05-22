@@ -12,8 +12,7 @@ public interface RoleService {
     List<RoleResponse> getListRole();
     RoleDetailResponse getRoleDetail(int id);
     String createRole(RoleRequest roleRequest);
-    String updateRole(RoleUpdateRequest roleUpdateRequest);
-    String updateRoleNoUpdatePermission(RoleUpdateRequest roleUpdateRequest);
+    void updateRole(RoleUpdateRequest roleUpdateRequest);
     void deleteRole(int id);
     String getPermission(int id);
 }

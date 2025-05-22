@@ -14,13 +14,13 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/letter")
+@RequestMapping("/manage-letter")
 @RequiredArgsConstructor
 public class ManageLetterController {
     private final LetterService letterService;
 
     @PostMapping("/get-list-letter")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_LETTER_COMPANY'," +
                                     "'ROLE_WATCH_LETTER_DEPARTMENT')")
     public ResponseData<List<LetterResponse>> getListLetter(@RequestBody EmployeeFilter filter) {
         List<LetterResponse> responses =  letterService.getListLetter(filter);
@@ -32,7 +32,7 @@ public class ManageLetterController {
     }
 
     @PostMapping("/get-count-letter")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_LETTER_COMPANY'," +
                                     "'ROLE_WATCH_LETTER_DEPARTMENT')")
     public ResponseData<List<CountLetterResponse>> getCountLetter (@RequestBody EmployeeFilter filter) {
         List<CountLetterResponse> responses =  letterService.getCountLetter(filter);
@@ -44,7 +44,7 @@ public class ManageLetterController {
     }
 
     @PostMapping("/no-approve-letter")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_LETTER_COMPANY'," +
                                     "'ROLE_WATCH_LETTER_DEPARTMENT')")
     public ResponseData<Void> noApproveLetter(@RequestParam long letterId) {
         letterService.noApprovalLetter(letterId);
@@ -55,7 +55,7 @@ public class ManageLetterController {
     }
 
     @PostMapping("/approve-letter")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_LETTER_COMPANY'," +
                                     "'ROLE_WATCH_LETTER_DEPARTMENT')")
     public ResponseData<Void> approveLetter(@RequestParam long letterId) {
         letterService.approveLetter(letterId);

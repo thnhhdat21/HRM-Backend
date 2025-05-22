@@ -58,6 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeOfDepartment> getListEmployeeFilter(EmployeeFilter filter) {
+        perEmployeeUtil.checkSameDepartmentByFilter(filter);
         List<EmployeeResponse> response = employeeDAO.getListEmployeeFilter(filter);
         Map<String, List<EmployeeResponse>> mapDepartment = new HashMap<>();
         List<EmployeeOfDepartment> listResponse = new ArrayList<>();
@@ -80,6 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeTypeCount> getCountEmployeeFilter(EmployeeFilter filter) {
+        perEmployeeUtil.checkSameDepartmentByFilter(filter);
         List<EmployeeTypeCount> response = employeeDAO.getCountEmployeeFilter(filter);
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.TYPE_INVALID);
@@ -134,8 +136,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeSelectResponse> getListEmployee() {
-        List<EmployeeSelectResponse> response = employeeDAO.getListEmployee();
+    public List<EmployeeNameAndCode> getListEmployee() {
+        List<EmployeeNameAndCode> response = employeeDAO.getListEmployee();
         if (response.isEmpty()) {
             throw new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY);
         }
@@ -147,7 +149,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeTimeSheetResponse getTimeSheetEmployee(EmployeeTimeSheetRequest request) {
         YearMonth yearMonth = YearMonth.from(request.getYearMonth());
         LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
+        LocalDate endDate = yearMonth.equals(YearMonth.from(LocalDate.now()))
+                ? LocalDate.now()
+                : yearMonth.atEndOfMonth();
         final int WORK_DAY_REAL = SalaryUtil.getWorkingDaysInMonth(startDate, endDate);
         List<EmployeeTimeSheet> list = employeeDAO.getTimeSheetEmployee(request.getEmployeeId(), startDate, endDate);
         List<EmployeeTimeSheet> result = new ArrayList<>();
@@ -156,10 +160,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         while (index < list.size()) {
             EmployeeTimeSheet employeeTimeSheet = list.get(index);
             if (employeeTimeSheet.getDateWorking() != null) {
-                while(!startDate.isAfter(employeeTimeSheet.getDateWorking())) {
+                while( !startDate.isAfter(endDate)) {
                     if(startDate.equals(employeeTimeSheet.getDateWorking())) {
                         result.add(employeeTimeSheet);
                         totalWorkDay++;
+                        startDate = startDate.plusDays(1);
+                        break;
                     } else
                         result.add(EmployeeTimeSheet.builder()
                                         .dateWorking(startDate)
@@ -178,6 +184,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void employeeCheckin(long employeeId) {
+        perEmployeeUtil.checkSameEmployee(employeeId);
         LocalDate now = LocalDate.now();
         YearMonth yearMonth = YearMonth.from(now);
         LocalTime checkIn = LocalTime.now();
@@ -219,6 +226,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void employeeCheckout(long employeeId) {
+        perEmployeeUtil.checkSameEmployee(employeeId);
         LocalDate now = LocalDate.now();
         YearMonth yearMonth = YearMonth.from(now);
         LocalTime checkout = LocalTime.now();
@@ -376,6 +384,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         return response;
     }
 
+    @Override
+    public EmployeeNameAndCode getEmployeeNameCode(long employeeId) {
+        Employee employee = employeeRepository.findByIdAndIsEnabled(employeeId, true).orElseThrow(
+                () -> new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY)
+        );
+        return EmployeeNameAndCode.builder()
+                .employeeId(employee.getId())
+                .employeeName(employee.getFullName())
+                .employeeCode(employee.getEmployeeCode())
+                .build();
+    }
+
+    @Override
+    public EmployeeResponse getJobPositionByEmployeeId(long employeeId) {
+        EmployeeResponse response = employeeDAO.getJobPositionByEmployeeId(employeeId);
+        if (response == null)
+            throw new BusinessException(ErrorCode.EMPLOYEE_IS_EMPTY);
+        return response;
+    }
+
     private void handleAddress(List<Address> list, String addressStr, Long id, int type, ErrorCode errorCode) {
         if (addressStr != null && !addressStr.isEmpty()) {
             Address address = updateAddress(id, addressStr, type, errorCode);
@@ -430,6 +458,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeEntity.setIssueDateCCCD(request.getIssueDateCCCD());
         employeeEntity.setPlaceCCCD(request.getPlaceCCCD());
         employeeEntity.setTaxCode(request.getTaxCode());
+        employeeEntity.setType(request.getType());
 
         if(employeeEntity.getId() == null) {
             employeeEntity.setEmployeeCode(employeeUtil.generateEmployeeCode());

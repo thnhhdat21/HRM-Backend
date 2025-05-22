@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Department findByIdAndIsEnabled(Long id, Boolean isEnabled);
-    Optional<List<Department> > findAllByDepartmentLevelAndIsEnabled(int level, Boolean isEnabled);
+    Optional<List<Department> > findAllByDepartmentLevelInAndIsEnabled(Integer[] level, Boolean isEnabled);
     boolean existsByIdAndIsEnabled(long id, Boolean isEnabled);
 }

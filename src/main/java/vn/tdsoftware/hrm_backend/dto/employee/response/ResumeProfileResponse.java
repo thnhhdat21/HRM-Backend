@@ -15,9 +15,9 @@ public class ResumeProfileResponse {
     private String avatar;
     private String fullName;
     private String employeeCode;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     private Date dateOfBirth;
     private String gender;
+    private int type;
     private String marriageStatus;
     private String nation;
     private String phoneNumber;
@@ -25,7 +25,6 @@ public class ResumeProfileResponse {
     private String religion; // tôn giáo
     private String ethnic; // dân tộc
     private String identityCard;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     private Date issueDateCCCD;
     private String placeCCCD;
     private String placeOfBirth;

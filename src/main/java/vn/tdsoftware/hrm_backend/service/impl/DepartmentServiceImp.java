@@ -82,7 +82,11 @@ public class DepartmentServiceImp implements DepartmentService {
 
     @Override
     public List<DepartmentResponse> getListDepartmentChild() {
-        List<Department> departmentList = departmentRepository.findAllByDepartmentLevelAndIsEnabled(DepartmentLevelConstant.DEPARTMENT, true).orElseThrow(
+        Integer[] levels = new Integer[] {
+                DepartmentLevelConstant.DEPARTMENT,
+                DepartmentLevelConstant.BGD
+        };
+        List<Department> departmentList = departmentRepository.findAllByDepartmentLevelInAndIsEnabled(levels, true).orElseThrow(
                 () -> new BusinessException(ErrorCode.DEPARTMENT_IS_EMPTY)
         );
         List<DepartmentResponse> listResponse = new ArrayList<>();

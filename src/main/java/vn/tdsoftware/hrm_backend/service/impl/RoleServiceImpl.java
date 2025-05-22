@@ -4,7 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.tdsoftware.hrm_backend.common.exception.BusinessException;
+import vn.tdsoftware.hrm_backend.dao.PermissionDAO;
 import vn.tdsoftware.hrm_backend.dao.RoleDAO;
+import vn.tdsoftware.hrm_backend.dto.role.request.PermissionRequest;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleRequest;
 import vn.tdsoftware.hrm_backend.dto.role.request.RoleUpdateRequest;
 import vn.tdsoftware.hrm_backend.dto.role.response.RoleDetailResponse;
@@ -19,11 +21,13 @@ import vn.tdsoftware.hrm_backend.util.ConvertUtil;
 import vn.tdsoftware.hrm_backend.util.FieldStringUtil;
 import vn.tdsoftware.hrm_backend.util.constant.PermissionConstant;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static vn.tdsoftware.hrm_backend.util.ConvertUtil.permissionValidator;
+import static vn.tdsoftware.hrm_backend.util.constant.PermissionConstant.*;
+import static vn.tdsoftware.hrm_backend.util.constant.UpdateTypeConstant.DELETE;
+import static vn.tdsoftware.hrm_backend.util.constant.UpdateTypeConstant.UPDATE;
 
 
 @Service
@@ -32,6 +36,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleHasPermissionRepository roleHasPermissionRepository;
     private final RoleDAO roleDAO;
+    private final PermissionDAO permissionDAO;
 
     @Override
     public List<RoleResponse> getListRole() {
@@ -52,58 +57,76 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public String createRole(RoleRequest roleRequest) {
         FieldStringUtil.validatorNameAndCode(roleRequest.getName(), roleRequest.getCode());
-        List<Integer> listPermission;
-        if (PermissionConstant.ADMIN.contains(roleRequest.getPermissions())) {
-            listPermission = ConvertUtil.permissionsAdmin;
-        } else if (PermissionConstant.DEFAULT.contains(roleRequest.getPermissions())) {
-            listPermission = ConvertUtil.permissionsDefault;
-        } else {
+        List<Integer> listPermission = new ArrayList<>();
+        List<Integer> listPerDefault;
+        listPerDefault = ConvertUtil.permissionsDefault;
+        if(!ADMIN.equals(roleRequest.getPermissions()) && !DEFAULT.equals(roleRequest.getPermissions())) {
             listPermission = permissionValidator(roleRequest.getPermissions());
         }
         Role roleSaved = roleRepository.save(Role.builder()
                 .name(roleRequest.getName())
                 .code(roleRequest.getCode())
                 .description(roleRequest.getDesc())
-                .accountAdmin(Objects.equals(roleRequest.getPermissions(), PermissionConstant.ADMIN))
+                .accountAdmin(Objects.equals(roleRequest.getPermissions(), ADMIN))
                 .accountDefault(Objects.equals(roleRequest.getPermissions(), PermissionConstant.DEFAULT))
                 .build());
-        for (Integer permission : listPermission) {
-            roleHasPermissionRepository.save(RoleHasPermission.builder()
-                            .roleId(roleSaved.getId())
-                            .permissionId(permission)
-                    .build());
+
+        if (!ADMIN.equals(roleRequest.getPermissions())) {
+            List<Integer> ALL_PERMISSION = Stream.concat(
+                    listPerDefault.stream(),
+                    listPermission.stream()
+            ).distinct().toList();
+
+            for (Integer permission : ALL_PERMISSION) {
+                roleHasPermissionRepository.save(RoleHasPermission.builder()
+                        .roleId(roleSaved.getId())
+                        .permissionId(permission)
+                        .build());
+            }
         }
         return roleSaved.getName();
     }
 
     @Override
     @Transactional
-    public String updateRole(RoleUpdateRequest roleUpdateRequest) {
+    public void updateRole(RoleUpdateRequest roleUpdateRequest) {
         FieldStringUtil.validatorNameAndCode(roleUpdateRequest.getName(), roleUpdateRequest.getCode());
-        List<Integer> listPermission;
-        if (PermissionConstant.ADMIN.contains(roleUpdateRequest.getPermissions())) {
-            listPermission = ConvertUtil.permissionsAdmin;
-        } else if (PermissionConstant.DEFAULT.contains(roleUpdateRequest.getPermissions())) {
-            listPermission = ConvertUtil.permissionsDefault;
+        Role role = roleRepository.findByIdAndIsEnabled(roleUpdateRequest.getId(), true).orElseThrow(
+                () -> new BusinessException(ErrorCode.ROLE_NOT_EXISTED)
+        );
+        role.setName(roleUpdateRequest.getName());
+        role.setCode(roleUpdateRequest.getCode());
+        role.setDescription(roleUpdateRequest.getDesc());
+        if(ADMIN.equals(roleUpdateRequest.getRole())) {
+            role.setAccountDefault(false);
+            role.setAccountAdmin(true);
+            permissionDAO.deleteCustomById(roleUpdateRequest.getId());
+        } else if (DEFAULT.equals(roleUpdateRequest.getRole())) {
+            role.setAccountAdmin(false);
+            role.setAccountDefault(true);
+            permissionDAO.deleteCustomById(roleUpdateRequest.getId());
         } else {
-            listPermission = permissionValidator(roleUpdateRequest.getPermissions());
+            role.setAccountAdmin(false);
+            role.setAccountDefault(false);
+            List<RoleHasPermission> roleSave = new ArrayList<>();
+            for (PermissionRequest request : roleUpdateRequest.getPermissions()) {
+                if(DELETE.equals(request.getIsUpdate()) || request.getPermissionId() == PERMISSION_DELETE) {
+                    RoleHasPermission roleHasPermission = roleHasPermissionRepository.findByIdAndIsEnabled(request.getRoleHasPermissionId(), true)
+                            .orElseThrow(() -> new BusinessException(ErrorCode.ROLE_NOT_EXISTED));
+                    roleHasPermission.setEnabled(false);
+                } else if(UPDATE.equals(request.getIsUpdate())) {
+                    RoleHasPermission roleHasPermission = roleHasPermissionRepository.findByIdAndIsEnabled(request.getRoleHasPermissionId(), true)
+                            .orElse(new RoleHasPermission());
+                    roleHasPermission.setRoleId(role.getId());
+                    roleHasPermission.setPermissionId(request.getPermissionId());
+                    roleSave.add(roleHasPermission);
+                }
+            }
+            if (!roleSave.isEmpty()) {
+                roleHasPermissionRepository.saveAll(roleSave);
+            }
         }
-        Role roleSaved = updateRoleGeneral(roleUpdateRequest);
-        roleDAO.removeRoleHasPermission(roleUpdateRequest.getId());
-        for (Integer permission : listPermission) {
-            roleHasPermissionRepository.save(RoleHasPermission.builder()
-                    .roleId(roleSaved.getId())
-                    .permissionId(permission)
-                    .build());
-        }
-        return roleSaved.getName();
-    }
-
-    @Override
-    public String updateRoleNoUpdatePermission(RoleUpdateRequest roleUpdateRequest) {
-        FieldStringUtil.validatorNameAndCode(roleUpdateRequest.getName(), roleUpdateRequest.getCode());
-        Role roleSaved = updateRoleGeneral(roleUpdateRequest);
-        return roleSaved.getName();
+        roleRepository.save(role);
     }
 
     @Override
@@ -115,18 +138,5 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public String getPermission(int id) {
         return roleDAO.getPermission(id);
-    }
-
-    private Role updateRoleGeneral(RoleUpdateRequest roleUpdateRequest) {
-        Optional<Role> roleEntity = roleRepository.findById(roleUpdateRequest.getId());
-        if (roleEntity.isEmpty()) {
-            throw new BusinessException(ErrorCode.ROLE_NOT_EXISTED);
-        }
-        roleEntity.get().setName(roleUpdateRequest.getName());
-        roleEntity.get().setCode(roleUpdateRequest.getCode());
-        roleEntity.get().setDescription(roleUpdateRequest.getDesc());
-        roleEntity.get().setAccountAdmin(PermissionConstant.ADMIN.contains(roleUpdateRequest.getPermissions()));
-        roleEntity.get().setAccountDefault(PermissionConstant.DEFAULT.contains(roleUpdateRequest.getPermissions()));
-        return roleRepository.save(roleEntity.get());
     }
 }

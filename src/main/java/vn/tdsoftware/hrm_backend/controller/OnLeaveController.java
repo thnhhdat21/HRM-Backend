@@ -21,7 +21,7 @@ public class OnLeaveController {
     @PostMapping("/get-on-leave-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<OnLeaveResponse> getOnLeaveProfile(@RequestParam("employeeId") long employeeId) {
         OnLeaveResponse response = onLeaveService.getOnLeaveProfile(employeeId);
         return ResponseData.<OnLeaveResponse>builder()
@@ -33,7 +33,7 @@ public class OnLeaveController {
 
     @PostMapping("/update-on-leave-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE'," +
-                                    "'ROLE_MANAGE_SELF_EMPLOYEE')")
+                                    "'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateOnLeaveProfile(@RequestBody OnLeaveRequest request) {
         onLeaveService.updateOnLeaveProfile(request);
         return ResponseData.<Void>builder()

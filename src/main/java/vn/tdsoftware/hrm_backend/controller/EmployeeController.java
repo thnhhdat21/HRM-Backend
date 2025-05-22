@@ -32,7 +32,7 @@ public class EmployeeController {
     @PostMapping("/get-resume-profile-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<ResumeProfileResponse> getResumeProfile(@RequestParam("employeeId") long employeeId) {
         ResumeProfileResponse response = employeeService.getResumeProfile(employeeId);
         return ResponseData.<ResumeProfileResponse>builder()
@@ -45,7 +45,7 @@ public class EmployeeController {
     @PostMapping(path = "/update-resume-profile-employee",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateResumeProfile(ResumeProfileRequest request) {
         employeeService.updateResumeProfile(request);
         return ResponseData.<Void>builder()
@@ -57,7 +57,7 @@ public class EmployeeController {
     @PostMapping(path = "/update-identity-card",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateIdentityCard(IdentityCartRequest request) {
         employeeService.updateIdentityCard(request);
         return ResponseData.<Void>builder()
@@ -67,9 +67,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/get-list-employee")
-    public ResponseData<List<EmployeeSelectResponse>> getListEmployee() {
-        List<EmployeeSelectResponse> response = employeeService.getListEmployee();
-        return ResponseData.<List<EmployeeSelectResponse>>builder()
+    public ResponseData<List<EmployeeNameAndCode>> getListEmployee() {
+        List<EmployeeNameAndCode> response = employeeService.getListEmployee();
+        return ResponseData.<List<EmployeeNameAndCode>>builder()
                 .code(1000)
                 .data(response)
                 .message("Get list successfully")
@@ -77,7 +77,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/get-employee-timekeeping")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<EmployeeTimeSheetResponse> getTimeSheetEmployee(@RequestBody EmployeeTimeSheetRequest request) {
         EmployeeTimeSheetResponse response =  employeeService.getTimeSheetEmployee(request);
         return ResponseData.<EmployeeTimeSheetResponse>builder()
@@ -88,7 +88,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/check-in")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> employeeCheckin() {
         employeeService.employeeCheckin(CurrentAccountDTO.getEmployeeId());
         return ResponseData.<Void>builder()
@@ -98,7 +98,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/check-out")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> employeeCheckout() {
         employeeService.employeeCheckout(CurrentAccountDTO.getEmployeeId());
         return ResponseData.<Void>builder()
@@ -110,7 +110,7 @@ public class EmployeeController {
     @PostMapping("/get-list-leave-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<List<LeaveLetterResponse>> getListLeaveLetter(@RequestParam("employeeId") long employeeId) {
         List<LeaveLetterResponse> responses = employeeService.getListLeaveLetter(employeeId);
         return ResponseData.<List<LeaveLetterResponse>>builder()
@@ -123,7 +123,7 @@ public class EmployeeController {
     @PostMapping("/get-list-overtime-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<List<OverTimeLetterResponse>> getListOverTimeLetter(@RequestParam("employeeId") long employeeId) {
         List<OverTimeLetterResponse> responses = employeeService.getListOverTimeLetter(employeeId);
         return ResponseData.<List<OverTimeLetterResponse>>builder()
@@ -134,7 +134,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/update-insurance")
-    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_EMPLOYEE', 'ROLE_MANAGE_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<Void> updateInsurance(@RequestBody InsuranceEmployeeRequest request) {
         employeeService.updateInsurance(request);
         return ResponseData.<Void>builder()
@@ -146,7 +146,7 @@ public class EmployeeController {
     @PostMapping("/get-insurance-number")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<InsuranceEmployeeResponse> getInsuranceNumber(@RequestParam("employeeId") long employeeId) {
         InsuranceEmployeeResponse response = employeeService.getInsuranceNumber(employeeId);
         return ResponseData.<InsuranceEmployeeResponse>builder()
@@ -159,7 +159,7 @@ public class EmployeeController {
     @PostMapping("/get-list-salary-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE', 'ADMIN')")
     public ResponseData<List<SalaryMonth>> getListSalaryEmployee(@RequestParam("employeeId") long employeeId, @RequestParam("year") String year) {
         List<SalaryMonth> response = employeeService.getListSalaryEmployee(employeeId, year);
         return ResponseData.<List<SalaryMonth>>builder()
@@ -172,7 +172,7 @@ public class EmployeeController {
     @PostMapping("/get-salary-detail-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE' , 'ADMIN')")
     public ResponseData<SalaryDetailResponse> getSalaryDetailEmployee(@RequestParam("salaryDetailId") long salaryDetailId) {
         SalaryDetailResponse response = employeeService.getSalaryDetailEmployee(salaryDetailId);
         return ResponseData.<SalaryDetailResponse>builder()
@@ -185,10 +185,30 @@ public class EmployeeController {
     @PostMapping("/get-salary-allowance-employee")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_EMPLOYEE_COMPANY'," +
                                     "'ROLE_WATCH_EMPLOYEE_DEPARTMENT'," +
-                                    "'ROLE_WATCH_SELF_EMPLOYEE')")
+                                    "'ROLE_WATCH_SELF_EMPLOYEE' , 'ADMIN')")
     public ResponseData<SalaryAllowanceEmployee> getSalaryAllowanceEmployee(@RequestParam("employeeId") long employeeId) {
         SalaryAllowanceEmployee response = employeeService.getSalaryAllowanceEmployee(employeeId);
         return ResponseData.<SalaryAllowanceEmployee>builder()
+                .code(1000)
+                .data(response)
+                .message("Checkout successfully")
+                .build();
+    }
+
+    @PostMapping("/get-employee-name-code")
+    public ResponseData<EmployeeNameAndCode> getEmployeeNameCode(@RequestParam("employeeId") long employeeId) {
+        EmployeeNameAndCode response = employeeService.getEmployeeNameCode(employeeId);
+        return ResponseData.<EmployeeNameAndCode>builder()
+                .code(1000)
+                .data(response)
+                .message("Checkout successfully")
+                .build();
+    }
+
+    @PostMapping("/get-employee-job-position")
+    public ResponseData<EmployeeResponse> getJobPositionByEmployeeId(@RequestParam("employeeId") long employeeId) {
+        EmployeeResponse response = employeeService.getJobPositionByEmployeeId(employeeId);
+        return ResponseData.<EmployeeResponse>builder()
                 .code(1000)
                 .data(response)
                 .message("Checkout successfully")

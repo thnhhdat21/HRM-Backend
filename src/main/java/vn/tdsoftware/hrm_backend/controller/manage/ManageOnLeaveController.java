@@ -17,7 +17,7 @@ public class ManageOnLeaveController {
     private final OnLeaveService onLeaveService;
 
     @PostMapping("/get-list-on-leave")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_TIMESHEET_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_TIMESHEET_COMPANY'," +
                                     "'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     public ResponseData<List<EmployeeOnLeaveResponse>> getEmployeeOnLeave(@RequestBody EmployeeFilter filter) {
         List<EmployeeOnLeaveResponse> responses = onLeaveService.getEmployeeOnLeave(filter);
@@ -29,7 +29,7 @@ public class ManageOnLeaveController {
     }
 
     @PostMapping("/get-count-on-leave")
-    @PreAuthorize("hasAnyAuthority('ROLE_WATCH_TIMESHEET_COMPANY'," +
+    @PreAuthorize("hasAnyAuthority('ADMIN','ROLE_WATCH_TIMESHEET_COMPANY'," +
                                     "'ROLE_WATCH_TIMESHEET_DEPARTMENT')")
     public ResponseData<Integer> getCountEmployee(@RequestBody EmployeeFilter filter) {
         int responses = onLeaveService.getCountEmployee(filter);

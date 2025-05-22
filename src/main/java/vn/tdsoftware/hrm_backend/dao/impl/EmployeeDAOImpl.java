@@ -67,7 +67,7 @@ public class EmployeeDAOImpl extends AbstractDao<Employee> implements EmployeeDA
             sql.append(SQLUtil.sqlFilter(filter, FilterConstant.TYPE_EMPLOYEE));
             int index = filter.getPageIndex() == 0 ? 1 : filter.getPageIndex();
             sql.append(" ) AS employeeList" +
-    "  WHERE employeeList.RowNumber BETWEEN ").append((index -1)*12).append(" AND ").append((index -1)*12 + 12);
+    "  WHERE employeeList.RowNumber BETWEEN ").append((index-1) * 12 + 1).append(" AND ").append((index)*12);
             return query(sql.toString(), new EmployeeResponseMapper());
         }
 
@@ -100,7 +100,7 @@ public class EmployeeDAOImpl extends AbstractDao<Employee> implements EmployeeDA
         }
 
         @Override
-        public List<EmployeeSelectResponse> getListEmployee() {
+        public List<EmployeeNameAndCode> getListEmployee() {
             String sql = "select employee.id, employee.fullName as name, employee.employeeCode as code " +
             "from employee " +
             "where employee.isEnabled = true and  (employee.status != 3 OR employee.status IS NULL)";
@@ -235,5 +235,22 @@ public class EmployeeDAOImpl extends AbstractDao<Employee> implements EmployeeDA
             return null;
         }
         return list.get(0);
+    }
+
+    @Override
+    public EmployeeResponse getJobPositionByEmployeeId(long employeeId) {
+        String sql = "select employee.id," +
+                "employee.employeeCode as code," +
+                "employee.fullName, " +
+                "department.name as department, " +
+                "jobPosition.name as jobPosition, " +
+                "duty.name as duty " +
+                "from employee " +
+                "inner join contractGeneral on employee.id = contractGeneral.employeeId " +
+                "inner join department on contractGeneral.departmentId = department.id " +
+                "inner join jobPosition on contractGeneral.jobPositionId = jobPosition.id " +
+                "inner join duty on jobPosition.dutyId = duty.id " +
+                "where employee.id = ?";
+        return query(sql, new EmployeeBasicResponseMapper(), employeeId).get(0);
     }
 }

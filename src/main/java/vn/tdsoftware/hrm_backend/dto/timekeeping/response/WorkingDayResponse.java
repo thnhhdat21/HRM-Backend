@@ -1,8 +1,6 @@
 package vn.tdsoftware.hrm_backend.dto.timekeeping.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class WorkingDayResponse {
     private double workDay;
     private boolean isLate;

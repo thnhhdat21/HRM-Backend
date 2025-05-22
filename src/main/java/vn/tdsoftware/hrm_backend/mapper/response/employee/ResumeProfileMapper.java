@@ -17,6 +17,7 @@ public class ResumeProfileMapper implements RowMapper<ResumeProfileResponse> {
                     .fullName(resultSet.getString("fullName"))
                     .employeeCode(resultSet.getString("employeeCode"))
                     .dateOfBirth(resultSet.getDate("dateOfBirth"))
+                    .type(resultSet.getInt("type"))
                     .gender(resultSet.getString("gender"))
                     .marriageStatus(resultSet.getString("marriageStatus"))
                     .nation(resultSet.getString("nation"))

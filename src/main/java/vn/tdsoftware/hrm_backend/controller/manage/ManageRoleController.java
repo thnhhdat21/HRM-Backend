@@ -27,7 +27,7 @@ public class ManageRoleController {
                 .build();
     }
 
-    @PostMapping("/role-detail")
+    @PostMapping("/get-role-detail")
     public ResponseData<RoleDetailResponse> getRoleDetail(@RequestParam("id") int id) {
         RoleDetailResponse response = roleService.getRoleDetail(id);
         return ResponseData.<RoleDetailResponse>builder()
@@ -46,21 +46,12 @@ public class ManageRoleController {
     }
 
     @PostMapping("/update-role")
-    public ResponseData<String> updateRole(@RequestBody RoleUpdateRequest roleUpdateRequest) {
-        String response = roleService.updateRole(roleUpdateRequest);
-        return ResponseData.<String>builder()
+    public ResponseData<Void> updateRole(@RequestBody RoleUpdateRequest roleUpdateRequest) {
+        roleService.updateRole(roleUpdateRequest);
+        return ResponseData.<Void>builder()
                 .code(1000)
                 .message("Create role successfully")
-                .data(response).build();
-    }
-
-    @PostMapping("/update-role-no-update-permission")
-    public ResponseData<String> updateRoleNoUpdatePermission(@RequestBody RoleUpdateRequest roleUpdateRequest) {
-        String response = roleService.updateRoleNoUpdatePermission(roleUpdateRequest);
-        return ResponseData.<String>builder()
-                .code(1000)
-                .message("Create role successfully")
-                .data(response).build();
+                .build();
     }
 
     @PostMapping("/delete-role")

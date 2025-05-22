@@ -25,7 +25,7 @@ public class LetterController {
 
     @PostMapping("/update-leave-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
-                                    "'ROLE_CREATE_SELF_LETTER')")
+                                    "'ROLE_CREATE_SELF_LETTER', 'ADMIN')")
     public ResponseData<Void> updateLeaveLetter (@RequestBody LeaveLetterRequest request) {
         letterService.updateLeaveLetter(request);
         return ResponseData.<Void>builder()
@@ -36,7 +36,7 @@ public class LetterController {
 
     @PostMapping("/update-overtime-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
-            "'ROLE_CREATE_SELF_LETTER')")
+            "'ROLE_CREATE_SELF_LETTER', 'ADMIN')")
     public ResponseData<Void> updateOverTimeLetter (@RequestBody OverTimeLetterRequest request) {
         letterService.updateOverTimeLetter(request);
         return ResponseData.<Void>builder()
@@ -47,7 +47,7 @@ public class LetterController {
 
     @PostMapping("/update-worktime-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
-            "'ROLE_CREATE_SELF_LETTER')")
+            "'ROLE_CREATE_SELF_LETTER', 'ADMIN')")
     public ResponseData<Void> updateWorkTimeLetter (@RequestBody WorkTimeLetterRequest request) {
         letterService.updateWorkTimeLetter(request);
         return ResponseData.<Void>builder()
@@ -59,7 +59,7 @@ public class LetterController {
 
     @PostMapping("/update-inout-endwork-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_SELF_LETTER', " +
-                                    "'ROLE_CREATE_SELF_LETTER')")
+                                    "'ROLE_CREATE_SELF_LETTER', 'ADMIN')")
     public ResponseData<Void> updateInOutAndEndWorkLetter (@RequestBody InOutAndEndWorkRequest request) {
         letterService.updateInOutAndEndWorkLetter(request);
         return ResponseData.<Void>builder()
@@ -71,7 +71,7 @@ public class LetterController {
     @PostMapping("/delete-letter")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGE_LETTER_COMPANY'," +
                                     "'ROLE_MANAGE_LETTER_DEPARTMENT', " +
-                                    "'ROLE_MANAGE_SELF_LETTER')")
+                                    "'ROLE_MANAGE_SELF_LETTER', 'ADMIN')")
     public ResponseData<Void> deleteLetter(@RequestParam long letterId) {
         letterService.deleteLetter(letterId);
         return ResponseData.<Void>builder()
@@ -83,7 +83,7 @@ public class LetterController {
     @PostMapping("/get-letter-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_WATCH_LETTER_COMPANY'," +
                                     "'ROLE_WATCH_LETTER_DEPARTMENT', " +
-                                    "'ROLE_WATCH_SELF_LETTER')")
+                                    "'ROLE_WATCH_SELF_LETTER', 'ADMIN')")
     public ResponseData<Object> getLetterBy(@RequestParam long letterId) {
         Object response = letterService.getLetter(letterId);
         return ResponseData.builder()
