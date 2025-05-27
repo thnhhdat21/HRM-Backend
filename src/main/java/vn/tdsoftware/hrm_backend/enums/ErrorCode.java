@@ -159,6 +159,9 @@ public enum ErrorCode {
     NO_PERMISSION_WATCH_EMPLOYEE_OTHER(1133, "Không có quyền xem thông tin nhân sự khác"),
     NO_PERMISSION_MANAGE_EMPLOYEE_OTHER(1133, "Không có quyền cập nhật thông tin nhân sự khác"),
     NO_APPROVE_SELF(1133, "Không thể thao tác với cá nhân"),
+    REPORT_COUNT_EMPLOYEE_IS_EMPTY(1134, "Không có báo cáo về số lượng nhân sự"),
+    REPORT_SALARY_DEPARTMENT_IS_EMPTY(1134, "Không có báo cáo về lương của phòng ban"),
+
 
     ;
 
