@@ -32,9 +32,14 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class AppConfig {
-//    private final String[] WHITE_LIST = {"/**"};
-    private final String[] WHITE_LIST = {"/auth/**", "/file/get-file"};
-    private final String[] WHITE_ITEM_MANAGE = {"/duty/**", "/department/**", "/allowance/**", "/job-position/**", "/letter-reason/**", "/employee/get-employee-name-code", "/employee/get-employee-job-position"};
+    private final String[] WHITE_LIST = {"/auth/**", "/file/get-file", "/letter-reason/get-letter-reason"};
+    private final String[] WHITE_ITEM_MANAGE = {"/duty/**",
+            "/department/**",
+            "/allowance/**",
+            "/job-position/**",
+            "/letter-reason/get-letter-reason-detail",
+            "/employee/get-employee-name-code",
+            "/employee/get-employee-job-position"};
 
     private final String[] ROLES_WATCH_COMPANY = {"ADMIN",
         "ROLE_WATCH_EMPLOYEE_COMPANY",

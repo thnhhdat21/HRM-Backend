@@ -5,8 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,6 +17,7 @@ import java.util.Date;
 @MappedSuperclass
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity<T extends Serializable> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +27,9 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     @Column(name = "isEnabled")
     private boolean isEnabled = true;
 
-    @Column(name = "createdBy")
-    private Integer createdBy = 2;
+    @Column(name = "createdBy", updatable = false)
+    @CreatedBy
+    private Integer createdBy;
 
     @CreatedDate
     @CreationTimestamp
@@ -33,6 +38,7 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     private Date createdAt;
 
     @Column(name = "updatedBy")
+    @LastModifiedBy
     private Integer updatedBy;
 
     @LastModifiedDate

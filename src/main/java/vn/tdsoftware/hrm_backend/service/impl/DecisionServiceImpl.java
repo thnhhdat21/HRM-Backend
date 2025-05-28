@@ -421,7 +421,7 @@ public class DecisionServiceImpl implements DecisionService {
         decisionRepository.save(decision);
         contractService.createContract(ContractRequest.builder()
                         .employeeId(decision.getEmployeeId())
-                        .contractCode(contractGeneral.getCode() + "_" +count)
+                        .contractCode(contractGeneral.getCode() + "_" + (count + 1))
                         .contractType(contractGeneral.getType())
                         .department(transferAndAppointDecision.getDepartmentNew())
                         .jobPosition(transferAndAppointDecision.getJobPositionNew())

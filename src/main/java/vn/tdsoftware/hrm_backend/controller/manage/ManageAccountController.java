@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
-import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
@@ -90,16 +89,6 @@ public class ManageAccountController {
         return ResponseData.<Void>builder()
                 .code(1000)
                 .message("Xóa tài khoản thành công")
-                .build();
-    }
-
-    @PostMapping("/get-detail-account")
-    private ResponseData<AccountDetailResponse> getDetailAccount(@RequestParam("id") long id) {
-        AccountDetailResponse response = accountService.getDetailAccount(id);
-        return ResponseData.<AccountDetailResponse>builder()
-                .code(1000)
-                .data(response)
-                .message("Get detail account successfully")
                 .build();
     }
 

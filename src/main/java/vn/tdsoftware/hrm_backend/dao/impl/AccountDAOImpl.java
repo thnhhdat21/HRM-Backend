@@ -3,12 +3,10 @@ package vn.tdsoftware.hrm_backend.dao.impl;
 import org.springframework.stereotype.Component;
 import vn.tdsoftware.hrm_backend.dao.AccountDAO;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeCount;
-import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
 import vn.tdsoftware.hrm_backend.entity.Account;
 import vn.tdsoftware.hrm_backend.mapper.response.account.AccountTypeCountMapper;
-import vn.tdsoftware.hrm_backend.mapper.response.account.AccountDetailMapper;
 import vn.tdsoftware.hrm_backend.mapper.response.account.AccountResponseMapper;
 import vn.tdsoftware.hrm_backend.util.SQLUtil;
 import vn.tdsoftware.hrm_backend.util.constant.FilterConstant;
@@ -96,11 +94,4 @@ public class AccountDAOImpl extends AbstractDao<Account> implements AccountDAO {
         update(sqlQuery, id);
     }
 
-    @Override
-    public AccountDetailResponse getAccountDetail(long id) {
-        String sqlQueryWithRole = "call proc_GetAccountWithRole(?) ";
-        List<AccountDetailResponse> responseList;
-        responseList = query(sqlQueryWithRole, new AccountDetailMapper(), id);
-        return responseList.get(0);
-    }
 }

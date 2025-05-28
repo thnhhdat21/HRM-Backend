@@ -10,7 +10,6 @@ import vn.tdsoftware.hrm_backend.common.thread.SendMailThread;
 import vn.tdsoftware.hrm_backend.dao.AccountDAO;
 import vn.tdsoftware.hrm_backend.dto.account.request.ActiveAccountRequest;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeCount;
-import vn.tdsoftware.hrm_backend.dto.account.response.AccountDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountResponse;
 import vn.tdsoftware.hrm_backend.dto.account.response.AccountTypeResponse;
 import vn.tdsoftware.hrm_backend.dto.employee.request.EmployeeFilter;
@@ -131,21 +130,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDetailResponse getDetailAccount(long id) {
-        checkAccount(id);
-        AccountDetailResponse response = accountDAO.getAccountDetail(id);
-        if (response == null) {
-            throw new BusinessException(ErrorCode.ACCOUNT_NOT_EXIST);
-        }
-        return response;
-    }
-
-    @Override
     public void createAccount(long employeeId, String employeeName) {
         accountRepository.save(Account.builder()
                         .employeeId(employeeId)
                         .username(AccountUtil.generateUsername(employeeName, employeeId))
-                        .status(AccountConstant.ACCOUNT_NOT_ACTIVE)
+                        .password(passwordEncoder.encode("thanhdat2"))
+                        .status(AccountConstant.ACCOUNT_ACTIVE)
                 .build());
     }
 

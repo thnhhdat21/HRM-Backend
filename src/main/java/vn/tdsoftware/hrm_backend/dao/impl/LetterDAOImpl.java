@@ -23,16 +23,20 @@ public class LetterDAOImpl extends AbstractDao<Letter> implements LetterDAO {
     public List<LetterResponse> getListLetter(EmployeeFilter filter) {
         StringBuilder sql = new StringBuilder(
                 "SELECT letterList.createdBy," +
-                        "letterList.letterId,  " +
+                        "letterList.letterId," +
+                        "letterList.employeeCode,  " +
                         "letterList.employeeName, " +
+                        "letterList.department, " +
                         "letterList.letterType, " +
                         "letterList.letterState, " +
                         "letterList.createdAt " +
                         "FROM ( " +
                         "SELECT ROW_NUMBER() OVER (ORDER BY letter.createdAt DESC) AS RowNumber," +
                         "letter.id as letterId, " +
-                        "ec.fullName as createdBy, " +
+                        "ec.fullName as createdBy," +
+                        "employee.employeeCode, " +
                         "employee.fullName as employeeName, " +
+                        "department.name as department, " +
                         "letterReason.letterTypeId as letterType, " +
                         "letter.state as letterState, " +
                         "letter.createdAt  " +

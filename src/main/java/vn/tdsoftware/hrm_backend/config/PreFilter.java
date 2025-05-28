@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import vn.tdsoftware.hrm_backend.common.entity.CurrentUserHolder;
 import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
 import vn.tdsoftware.hrm_backend.entity.Account;
 import vn.tdsoftware.hrm_backend.entity.Role;
@@ -89,6 +90,7 @@ public class PreFilter extends OncePerRequestFilter {
 
                     // set cho user Hien tai
                     CurrentAccountDTO.create(((Account) userDetails).getEmployeeId(), departmentId ,permissions);
+                    CurrentUserHolder.setEmployeeId(((Account) userDetails).getEmployeeId());
                     log.info("CurrentAccountDTO: {}", CurrentAccountDTO.getEmployeeId());
                 }
             }
@@ -98,6 +100,8 @@ public class PreFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.setContentType("application/json");
             response.getWriter().write("{\"code\": " + ErrorCode.TOKEN_EXPIRED.getCode() + ",\n\"error\": \"Token expired\"}");
+        } finally {
+            CurrentUserHolder.clear();
         }
     }
 }

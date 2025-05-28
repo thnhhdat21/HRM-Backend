@@ -13,13 +13,10 @@ public class PermissionDAOImpl extends AbstractDao<Permission> implements Permis
 
     @Override
     public List<String> getPermissionByRole(String role) {
-        String sql = "select permission.name  " +
-                "from account  " +
-                "inner join contractgeneral on account.employeeId = contractGeneral.employeeId  " +
-                "inner join jobposition on contractGeneral.jobPositionId = jobPosition.id  " +
-                "inner join role on jobPosition.roleId = role.id  " +
-                "inner join rolehaspermission on role.id = rolehasPermission.roleId and roleHasPermission.isEnabled = 1 " +
-                "inner join permission on rolehasPermission.permissionId = permission.id " +
+        String sql = "select permission.name " +
+                "from role " +
+                "inner join rolehaspermission on role.id = rolehasPermission.roleId and roleHasPermission.isEnabled = 1  " +
+                "inner join permission on rolehasPermission.permissionId = permission.id  " +
                 "where role.code = '" + role + "'";
         return query(sql, resultSet -> {
             try {

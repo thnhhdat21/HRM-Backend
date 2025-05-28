@@ -2,24 +2,19 @@ package vn.tdsoftware.hrm_backend.controller;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import vn.tdsoftware.hrm_backend.common.dto.response.ResponseData;
 import vn.tdsoftware.hrm_backend.dto.account.response.CurrentAccountDTO;
-import vn.tdsoftware.hrm_backend.dto.education.request.EducationRequest;
 import vn.tdsoftware.hrm_backend.dto.employee.request.*;
 import vn.tdsoftware.hrm_backend.dto.employee.response.*;
-import vn.tdsoftware.hrm_backend.dto.family.request.FamilyRequest;
 import vn.tdsoftware.hrm_backend.dto.letter.response.leave.LeaveLetterResponse;
 import vn.tdsoftware.hrm_backend.dto.letter.response.overtime.OverTimeLetterResponse;
 import vn.tdsoftware.hrm_backend.dto.salarytable.response.SalaryDetailResponse;
 import vn.tdsoftware.hrm_backend.dto.salarytable.response.SalaryMonth;
 import vn.tdsoftware.hrm_backend.service.EmployeeService;
 
-import java.time.YearMonth;
 import java.util.List;
 
 @RestController
